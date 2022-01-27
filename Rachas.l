@@ -37,6 +37,9 @@ operacion        \+|\-|\*|\/|\^|@|;
 "cot"               {return COT;}
 "sec"               {return SEC;}
 "csc"               {return CSC;}
+"getRoot"           {return GETROOT;}
+"getExp"            {return GETEXP;}
+"getLog"            {return GETLOG;}
 {mientras}			{return MIENTRAS;}
 {condicion}			{return CONDICION;}
 {matriz}            {return MATRIZ;}

@@ -10,7 +10,7 @@ extern FILE* yyin;
 
 // Aqui es para el codigo necesario para almacenar
 
-// Comando Ahorrador:   :v
+// Comando Ahorrador:   
 // flex Rachas.l && bison -dy Rachas.y && gcc lex.yy.c  y.tab.c -o a && ./a.exe pru.rach
 
 typedef struct Number{
@@ -44,6 +44,10 @@ void salidaVector(char* nombre, VectorIni* head);
 float sec(float num);
 float csc(float num);
 float cot(float num);
+float getRoot(float indice, float radicando);
+float getExp(float base, float exp);
+float getLog(float argumento, float base);
+float getSumatoria(float datos[], int size);
 
 // Inicializacion atributos
 Number* iniNode = NULL;
@@ -79,6 +83,9 @@ VectorIni* iniNodeVector = NULL;
 %token COT
 %token SEC
 %token CSC
+%token GETROOT
+%token GETEXP
+%token GETLOG
 
 %token<str> ID   
 %token<numberI> NUMERO_ENTERO
@@ -140,6 +147,9 @@ functs  : SEC PARENTESISA expr PARENTESISB              {$$ = sec($3);}
         | SIN PARENTESISA expr PARENTESISB              {$$ = sin($3);}
         | COS PARENTESISA expr PARENTESISB              {$$ = cos($3);}
         | TAN PARENTESISA expr PARENTESISB              {$$ = tan($3);} 
+        | GETROOT PARENTESISA expr  expr PARENTESISB    {$$ = getRoot($3,$4);}
+        | GETEXP PARENTESISA expr  expr PARENTESISB     {$$ = getExp($3,$4);}
+        | GETLOG PARENTESISA expr  expr PARENTESISB     {$$ = getLog($3,$4);}
         ;
         
 %%
@@ -251,11 +261,11 @@ void salidaVector(char* nombre, VectorIni* head){
     }
 }
 
-/////////////////////Estructuras
+/* Fin Estructuras */
 
-/////// Funciones Incluidas
+/* Inicio Funciones Incluidas*/
 
-// Funciones Trigonométricas
+/* Funciones Trigonométricas */
 
 float sec(float num) {
     return 1 / cos(num);
@@ -269,7 +279,27 @@ float cot(float num) {
     return 1 / tan(num);
 }
 
-/////// Funciones Incluidas
+/* Funciones Algebráicas */
+
+float getRoot(float indice, float radicando) {
+    return pow(radicando, 1 / indice);
+}
+
+float getExp(float base, float exp) {
+    return pow(base, exp);
+}
+
+float getLog(float base, float argumento) {
+    return log(argumento) / log(base);
+}
+
+/* Funciones Estadísticas */
+
+//Necesito ayuda para recorrer los vectores uwu
+
+/* Fin Funciones Incluidas*/
+
+/*  Main de ejecución   */
 
 int main (int argc, char **argv) {
     iniNode = crearNumero("PrimerVarialbeReservada", 0);

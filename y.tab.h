@@ -59,10 +59,13 @@
      COT = 275,
      SEC = 276,
      CSC = 277,
-     ID = 278,
-     NUMERO_ENTERO = 279,
-     NUMERO_FLOTANTE = 280,
-     LOGICA = 281
+     GETROOT = 278,
+     GETEXP = 279,
+     GETLOG = 280,
+     ID = 281,
+     NUMERO_ENTERO = 282,
+     NUMERO_FLOTANTE = 283,
+     LOGICA = 284
    };
 #endif
 /* Tokens.  */
@@ -86,10 +89,13 @@
 #define COT 275
 #define SEC 276
 #define CSC 277
-#define ID 278
-#define NUMERO_ENTERO 279
-#define NUMERO_FLOTANTE 280
-#define LOGICA 281
+#define GETROOT 278
+#define GETEXP 279
+#define GETLOG 280
+#define ID 281
+#define NUMERO_ENTERO 282
+#define NUMERO_FLOTANTE 283
+#define LOGICA 284
 
 
 
@@ -99,7 +105,7 @@ typedef union YYSTYPE
 {
 
 /* Line 1676 of yacc.c  */
-#line 54 "Rachas.y"
+#line 57 "Rachas.y"
 
     char* str;
     int numberI;
@@ -109,7 +115,7 @@ typedef union YYSTYPE
 
 
 /* Line 1676 of yacc.c  */
-#line 113 "y.tab.h"
+#line 119 "y.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

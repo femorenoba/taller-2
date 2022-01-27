@@ -3,46 +3,11 @@
 
 #define SIZEOF(arr) sizeof(arr) / sizeof(*arr) /*Macro auxiliar para obtener el tamaño de un array*/
 
-/* Funciones Trigonométricas */
-double sec(double num)
-{
-    return 1 / cos(num);
-}
-
-double csc(double num)
-{
-    return 1 / sin(num);
-}
-
-double cot(double num)
-{
-    return 1 / tan(num);
-}
-
 /* Funciones Algebráicas */
 
-double getRoot(double indice, double radicando)
-{
-    return pow(radicando, 1 / indice);
-}
-
-double getExp(double base, double exp)
-{
-    return pow(base, exp);
-}
-
-double getLog(double argumento, double base)
-{
-    return log(argumento) / log(base);
-}
-
-/* Funciones Estadísticas */
-
-double getSumatoria(double datos[], int size)
-{
-    double sum = 0;
-    for (int i = 0; i < size; i++)
-    {
+float getSumatoria(float datos[], int size) {
+    float sum = 0;
+    for (int i = 0; i < size; i++) {
         sum += datos[i];
     }
     return sum;

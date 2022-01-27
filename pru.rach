@@ -11,4 +11,3 @@ vsalida(vector2);
 a := [0 4 8];
 b := [5 5 8];
 vsalida(b);
-salida(sin(cos(tan(csc(sec(cot(0.5)))))));
