@@ -23,13 +23,14 @@ logica          >|<|<=|>=|=|!=
 mientras        "mientras"
 condicion       "condicion"
 matriz          "matriz"
-operacion        \+|\-|\*|\/|\^|@|;
+operacion       \+|\-|\*|\/|\^|@|;|,
 
 %%
 {finLinea}          {}
 {comentario}		{}
 {espacio}			{}
 "vsalida"           {return VSALIDA;}
+"msalida"           {return MSALIDA;}
 "salida"            {return SALIDA;}
 "sin"               {return SIN;}
 "cos"               {return COS;}
