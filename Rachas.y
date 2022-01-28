@@ -6,6 +6,7 @@ int yylex();
 #include <ctype.h>
 #include <string.h>
 #include <math.h>
+#include <stdbool.h>
 extern FILE* yyin;
 
 // Aqui es para el codigo necesario para almacenar
@@ -24,12 +25,23 @@ typedef struct VectorEle{
     float num;
 } VectorEle;
 
-
 typedef struct VectorIni{
     struct VectorIni* next;
     struct VectorEle* nextEle;
     char* nombre;
 } VectorIni;
+
+typedef struct MatrizFila{
+    struct VectorEle* nextEle;
+    int num;
+    struct MatrizFila* next;
+} MatrizFila;
+
+typedef struct MatrizIni{
+    struct MatrizFila* elements;
+    char* nombre;
+    struct MatrizIni* next;
+} MatrizIni; 
 
 
 // Declaracion de funciones
@@ -48,10 +60,16 @@ float getRoot(float indice, float radicando);
 float getExp(float base, float exp);
 float getLog(float argumento, float base);
 float getSumatoria(float datos[], int size);
+MatrizFila* crearFila(int numero, VectorEle* elementos);
+MatrizFila* agregarFila(MatrizFila* fila, VectorEle* elementos);
+MatrizIni* crearMatrizIni(char* nombre, MatrizFila* fila);
+char* nombrarMatriz(char* nombre, MatrizFila* fila, MatrizIni* nodoIni );
+void salidaMatriz(char* nombre, MatrizIni* nodoIni);
 
 // Inicializacion atributos
 Number* iniNode = NULL;
 VectorIni* iniNodeVector = NULL;
+MatrizIni* iniNodeMatriz = NULL;
 
 %}
 
@@ -60,6 +78,7 @@ VectorIni* iniNodeVector = NULL;
     int numberI;
     float numberF;
     struct VectorEle* vec;
+    struct MatrizFila* matx;
 }
 
 %start line 
@@ -73,10 +92,10 @@ VectorIni* iniNodeVector = NULL;
 %token CORCHETEB
 %token LLAVESA
 %token LLAVESB            
-%token MATRIZ  
 %token SALIDA
 %token ASIGNACION
 %token VSALIDA
+%token MSALIDA
 %token SIN
 %token COS
 %token TAN
@@ -98,6 +117,7 @@ VectorIni* iniNodeVector = NULL;
 %type <str> indent
 %type <vec> vector
 %type <numberF> functs
+%type<matx> matriz
 
 %left '+' '-'
 %left '*' '/'
@@ -118,6 +138,8 @@ line    : line ';'                                      {;}
         | SALIDA PARENTESISA ID PARENTESISB ';'         {printf("%s : %f", $3, getNumber(iniNode,$3));}
         | VSALIDA PARENTESISA ID PARENTESISB ';'        {salidaVector($3,iniNodeVector );}
         | line VSALIDA PARENTESISA ID PARENTESISB ';'   {salidaVector($4,iniNodeVector );}
+	| MSALIDA PARENTESISA ID PARENTESISB ';'        {salidaMatriz($3,iniNodeMatriz );}
+        | line MSALIDA PARENTESISA ID PARENTESISB ';'   {salidaMatriz($4,iniNodeMatriz );}
         ;
 
 expr    : term                                          {$$ = $1;}
@@ -135,6 +157,7 @@ term    : NUMERO_ENTERO                                 {$<numberF>$ = (float)$1
 
 indent  : ID ASIGNACION expr                            {agregarNumero(iniNode,$1,$3);}
         | ID ASIGNACION CORCHETEA vector CORCHETEB      {nombrarVector(iniNodeVector, $1, $4);}
+	| ID ASIGNACION LLAVESA matriz LLAVESB          {nombrarMatriz($1, $4,iniNodeMatriz);}
         ;
 
 vector  : term                                          {$$ = crearVectorEle($1);}
@@ -151,10 +174,14 @@ functs  : SEC PARENTESISA expr PARENTESISB              {$$ = sec($3);}
         | GETEXP PARENTESISA expr  expr PARENTESISB     {$$ = getExp($3,$4);}
         | GETLOG PARENTESISA expr  expr PARENTESISB     {$$ = getLog($3,$4);}
         ;
+	
+matriz  : CORCHETEA vector CORCHETEB			{$$ = crearFila(0, $2);}
+        | matriz CORCHETEA vector CORCHETEB             {$$ = agregarFila($1, $3);}
         
 %%
 
 ///////////////////Estructuras
+
 
 // Se supone que crea un nuevo numero
 Number* crearNumero(char* nombre, float valor){
@@ -166,7 +193,7 @@ Number* crearNumero(char* nombre, float valor){
     return number;
 }
 
-// Se agrega el numero que se creo a la lista encadenada o se actualiza el valor
+//Se agrega el numero que se creo a la lista encadenada o se actualiza el valor
 char* agregarNumero(Number* head, char* nombre, float valor){
     while(head->next != NULL){
         if(strcmp(head->nombre, nombre) == 0){
@@ -198,6 +225,8 @@ float getNumber(Number* head, char* nombre){
     return 0.0000001;
 }
 
+// Para la creacion de vectores
+
 VectorIni* crearVectorIni(char* nombre, VectorEle* elementos){
     VectorIni* vectorIni;
     vectorIni = (VectorIni*)malloc(sizeof(VectorIni));
@@ -210,13 +239,13 @@ VectorIni* crearVectorIni(char* nombre, VectorEle* elementos){
 char* nombrarVector(VectorIni* head, char* nombre, VectorEle* elementos){
     while(head->next != NULL){
         if(strcmp(head->nombre , nombre) == 0){
-            head = crearVectorIni(nombre,elementos);
+            head->nextEle = elementos;
             return head->nombre; 
         }
         head = head->next;
     }
     if(strcmp(head->nombre , nombre) == 0){
-        head = crearVectorIni(nombre, elementos);
+        head->nextEle = elementos;
         return head->nombre; 
     }
     VectorIni* vectorIni = crearVectorIni(nombre, elementos);
@@ -249,6 +278,7 @@ void salidaVector(char* nombre, VectorIni* head){
         head = head->next;
     }
     if(strcmp(head->nombre, nombre) != 0){
+        printf("Vector not found\n");
         return;
     }else{
         VectorEle* vectorEle = head->nextEle;
@@ -258,6 +288,113 @@ void salidaVector(char* nombre, VectorIni* head){
             vectorEle = vectorEle->next;
         }
         printf("]\n");
+    }
+}
+
+// Para la creacion de matrices
+MatrizFila* crearFila(int numero, VectorEle* elementos){
+    MatrizFila* matrizFila;
+    matrizFila = (MatrizFila*)malloc(sizeof(matrizFila));
+    matrizFila->num = numero;
+    matrizFila->nextEle = elementos;
+    matrizFila->next = NULL;
+    return matrizFila;
+}
+
+MatrizFila* agregarFila(MatrizFila* fila, VectorEle* elementos){
+    MatrizFila* filaOrigi = fila;
+    while(fila->next !=  NULL){
+        fila = fila->next;
+    }
+    int num = fila->num;
+    MatrizFila* nuevaFila = crearFila(num+1, elementos);
+    fila->next = nuevaFila;
+    return filaOrigi;
+}
+
+MatrizIni* crearMatrizIni(char* nombre, MatrizFila* fila ){
+    MatrizIni* matrizIni;
+    matrizIni = (MatrizIni*)malloc(sizeof(matrizIni));
+    matrizIni->elements = fila;
+    matrizIni->nombre = nombre;
+    matrizIni->next = NULL;
+    return matrizIni;
+}
+
+void imprimirVector(MatrizFila* fila){
+    printf("Vetores que estan entrando\n");
+    while(fila != NULL){
+        VectorEle* vect = fila->nextEle;
+        printf("[");
+        while(vect != NULL){
+            printf(" %f ",vect->num);
+            vect = vect->next;
+        }
+        printf("]\n");
+        fila=fila->next;   
+    }
+}
+
+bool crearPrimero(char* name, MatrizFila* fila){
+    if(iniNodeMatriz == NULL){
+        MatrizIni* matrizIni;
+        matrizIni = (MatrizIni*)malloc(sizeof(matrizIni));
+        matrizIni->elements = fila;
+        matrizIni->nombre = name;
+        matrizIni->next = NULL;
+        iniNodeMatriz = matrizIni;
+        return true;    
+    }else{
+        return false;
+    }
+}
+
+char* nombrarMatriz(char* name, MatrizFila* fila, MatrizIni* nodoIni){
+    if(crearPrimero(name, fila) == true){
+        return name;
+    }else{
+        while(nodoIni->next != NULL){
+            if(strcmp(nodoIni->nombre, name) == 0){
+                nodoIni->elements = fila;
+                return name;
+            }
+            nodoIni = nodoIni->next;
+        }
+        if(strcmp(nodoIni->nombre, name) == 0){
+            nodoIni->elements = fila;
+            return name;
+        }
+        MatrizIni* nuevoNodo = crearMatrizIni(name, fila);
+        nodoIni->next = nuevoNodo;
+        return nuevoNodo->nombre;
+    } 
+}
+
+void salidaMatriz(char* nombre, MatrizIni* nodoIni){
+    nodoIni = iniNodeMatriz;
+    printf("\n Matriz  %s \n", nombre);
+    while(nodoIni->next != NULL){
+        if(strcmp(nodoIni->nombre, nombre) ==0){
+            break;
+        }
+        nodoIni = nodoIni->next;
+    }
+    if(strcmp(nodoIni->nombre, nombre) != 0){
+        printf("No matrix found");
+        return;
+    }else{
+        MatrizFila* fila = nodoIni->elements;
+        printf("[");
+        while(fila != NULL){
+            VectorEle* elementos = fila->nextEle;
+            while(elementos != NULL){
+                printf(" %f ",elementos->num);
+                elementos = elementos->next;
+            }
+            printf(", \n");
+            fila = fila->next;
+        }
+        printf("] \n");
     }
 }
 
