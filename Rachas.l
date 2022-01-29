@@ -43,7 +43,6 @@ operacion       \+|\-|\*|\/|\^|@|;|,
 "getLog"            {return GETLOG;}
 {mientras}			{return MIENTRAS;}
 {condicion}			{return CONDICION;}
-{matriz}            {return MATRIZ;}
 {asignacion}        {return ASIGNACION;}
 {entero}			{yylval.numberI = atoi(yytext); return NUMERO_ENTERO;}
 {flotante}			{yylval.numberF = atof(yytext); return NUMERO_FLOTANTE;} 

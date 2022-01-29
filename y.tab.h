@@ -49,10 +49,10 @@
      CORCHETEB = 265,
      LLAVESA = 266,
      LLAVESB = 267,
-     MATRIZ = 268,
-     SALIDA = 269,
-     ASIGNACION = 270,
-     VSALIDA = 271,
+     SALIDA = 268,
+     ASIGNACION = 269,
+     VSALIDA = 270,
+     MSALIDA = 271,
      SIN = 272,
      COS = 273,
      TAN = 274,
@@ -79,10 +79,10 @@
 #define CORCHETEB 265
 #define LLAVESA 266
 #define LLAVESB 267
-#define MATRIZ 268
-#define SALIDA 269
-#define ASIGNACION 270
-#define VSALIDA 271
+#define SALIDA 268
+#define ASIGNACION 269
+#define VSALIDA 270
+#define MSALIDA 271
 #define SIN 272
 #define COS 273
 #define TAN 274
@@ -105,17 +105,18 @@ typedef union YYSTYPE
 {
 
 /* Line 1676 of yacc.c  */
-#line 58 "Rachas.y"
+#line 76 "Rachas.y"
 
     char* str;
     int numberI;
     float numberF;
     struct VectorEle* vec;
+    struct MatrizFila* matx;
 
 
 
 /* Line 1676 of yacc.c  */
-#line 119 "y.tab.h"
+#line 120 "y.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

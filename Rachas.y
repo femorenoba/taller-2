@@ -123,7 +123,6 @@ MatrizIni* iniNodeMatriz = NULL;
 %left '*' '/'
 %left NUMERO_ENTERO NUMERO_FLOTANTE
 
-
 %%
 
 line    : line ';'                                      {;} 
@@ -138,7 +137,7 @@ line    : line ';'                                      {;}
         | SALIDA PARENTESISA ID PARENTESISB ';'         {printf("%s : %f", $3, getNumber(iniNode,$3));}
         | VSALIDA PARENTESISA ID PARENTESISB ';'        {salidaVector($3,iniNodeVector );}
         | line VSALIDA PARENTESISA ID PARENTESISB ';'   {salidaVector($4,iniNodeVector );}
-	| MSALIDA PARENTESISA ID PARENTESISB ';'        {salidaMatriz($3,iniNodeMatriz );}
+	    | MSALIDA PARENTESISA ID PARENTESISB ';'        {salidaMatriz($3,iniNodeMatriz );}
         | line MSALIDA PARENTESISA ID PARENTESISB ';'   {salidaMatriz($4,iniNodeMatriz );}
         ;
 
@@ -157,7 +156,7 @@ term    : NUMERO_ENTERO                                 {$<numberF>$ = (float)$1
 
 indent  : ID ASIGNACION expr                            {agregarNumero(iniNode,$1,$3);}
         | ID ASIGNACION CORCHETEA vector CORCHETEB      {nombrarVector(iniNodeVector, $1, $4);}
-	| ID ASIGNACION LLAVESA matriz LLAVESB          {nombrarMatriz($1, $4,iniNodeMatriz);}
+	    | ID ASIGNACION LLAVESA matriz LLAVESB          {nombrarMatriz($1, $4,iniNodeMatriz);}
         ;
 
 vector  : term                                          {$$ = crearVectorEle($1);}
@@ -175,9 +174,9 @@ functs  : SEC PARENTESISA expr PARENTESISB              {$$ = sec($3);}
         | GETLOG PARENTESISA expr  expr PARENTESISB     {$$ = getLog($3,$4);}
         ;
 	
-matriz  : CORCHETEA vector CORCHETEB			{$$ = crearFila(0, $2);}
+matriz  : CORCHETEA vector CORCHETEB			        {$$ = crearFila(0, $2);}
         | matriz CORCHETEA vector CORCHETEB             {$$ = agregarFila($1, $3);}
-        
+        ;
 %%
 
 ///////////////////Estructuras
@@ -431,8 +430,6 @@ float getLog(float base, float argumento) {
 }
 
 /* Funciones Estadísticas */
-
-//Necesito ayuda para recorrer los vectores uwu
 
 /* Fin Funciones Incluidas*/
 
