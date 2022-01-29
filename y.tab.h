@@ -105,7 +105,7 @@ typedef union YYSTYPE
 {
 
 /* Line 1676 of yacc.c  */
-#line 57 "Rachas.y"
+#line 58 "Rachas.y"
 
     char* str;
     int numberI;

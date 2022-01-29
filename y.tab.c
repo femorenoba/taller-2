@@ -118,6 +118,7 @@ float cot(float num);
 float getRoot(float indice, float radicando);
 float getExp(float base, float exp);
 float getLog(float argumento, float base);
+float getSumatoria(float datos[], int size);
 
 // Inicializacion atributos
 Number* iniNode = NULL;
@@ -126,7 +127,7 @@ VectorIni* iniNodeVector = NULL;
 
 
 /* Line 189 of yacc.c  */
-#line 130 "y.tab.c"
+#line 131 "y.tab.c"
 
 /* Enabling traces.  */
 #ifndef YYDEBUG
@@ -219,7 +220,7 @@ typedef union YYSTYPE
 {
 
 /* Line 214 of yacc.c  */
-#line 57 "Rachas.y"
+#line 58 "Rachas.y"
 
     char* str;
     int numberI;
@@ -229,7 +230,7 @@ typedef union YYSTYPE
 
 
 /* Line 214 of yacc.c  */
-#line 233 "y.tab.c"
+#line 234 "y.tab.c"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
@@ -241,7 +242,7 @@ typedef union YYSTYPE
 
 
 /* Line 264 of yacc.c  */
-#line 245 "y.tab.c"
+#line 246 "y.tab.c"
 
 #ifdef short
 # undef short
@@ -542,10 +543,10 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,   108,   108,   109,   110,   111,   112,   113,   114,   115,
-     116,   117,   118,   119,   122,   123,   124,   125,   126,   127,
-     130,   131,   132,   135,   136,   139,   140,   143,   144,   145,
-     146,   147,   148,   149,   150,   151
+       0,   109,   109,   110,   111,   112,   113,   114,   115,   116,
+     117,   118,   119,   120,   123,   124,   125,   126,   127,   128,
+     131,   132,   133,   136,   137,   140,   141,   144,   145,   146,
+     147,   148,   149,   150,   151,   152
 };
 #endif
 
@@ -1526,245 +1527,245 @@ yyreduce:
         case 2:
 
 /* Line 1455 of yacc.c  */
-#line 108 "Rachas.y"
+#line 109 "Rachas.y"
     {;}
     break;
 
   case 3:
 
 /* Line 1455 of yacc.c  */
-#line 109 "Rachas.y"
+#line 110 "Rachas.y"
     {;}
     break;
 
   case 4:
 
 /* Line 1455 of yacc.c  */
-#line 110 "Rachas.y"
+#line 111 "Rachas.y"
     {;}
     break;
 
   case 5:
 
 /* Line 1455 of yacc.c  */
-#line 111 "Rachas.y"
+#line 112 "Rachas.y"
     {;}
     break;
 
   case 6:
 
 /* Line 1455 of yacc.c  */
-#line 112 "Rachas.y"
+#line 113 "Rachas.y"
     {;}
     break;
 
   case 7:
 
 /* Line 1455 of yacc.c  */
-#line 113 "Rachas.y"
+#line 114 "Rachas.y"
     {;}
     break;
 
   case 8:
 
 /* Line 1455 of yacc.c  */
-#line 114 "Rachas.y"
+#line 115 "Rachas.y"
     {;}
     break;
 
   case 9:
 
 /* Line 1455 of yacc.c  */
-#line 115 "Rachas.y"
+#line 116 "Rachas.y"
     {printf("%f \n",(yyvsp[(3) - (5)].numberF));}
     break;
 
   case 10:
 
 /* Line 1455 of yacc.c  */
-#line 116 "Rachas.y"
+#line 117 "Rachas.y"
     {printf("%f \n",(yyvsp[(4) - (6)].numberF));}
     break;
 
   case 11:
 
 /* Line 1455 of yacc.c  */
-#line 117 "Rachas.y"
+#line 118 "Rachas.y"
     {printf("%s : %f", (yyvsp[(3) - (5)].str), getNumber(iniNode,(yyvsp[(3) - (5)].str)));}
     break;
 
   case 12:
 
 /* Line 1455 of yacc.c  */
-#line 118 "Rachas.y"
+#line 119 "Rachas.y"
     {salidaVector((yyvsp[(3) - (5)].str),iniNodeVector );}
     break;
 
   case 13:
 
 /* Line 1455 of yacc.c  */
-#line 119 "Rachas.y"
+#line 120 "Rachas.y"
     {salidaVector((yyvsp[(4) - (6)].str),iniNodeVector );}
     break;
 
   case 14:
 
 /* Line 1455 of yacc.c  */
-#line 122 "Rachas.y"
+#line 123 "Rachas.y"
     {(yyval.numberF) = (yyvsp[(1) - (1)].numberF);}
     break;
 
   case 15:
 
 /* Line 1455 of yacc.c  */
-#line 123 "Rachas.y"
+#line 124 "Rachas.y"
     {(yyval.numberF) = (yyvsp[(1) - (3)].numberF) + (yyvsp[(3) - (3)].numberF);}
     break;
 
   case 16:
 
 /* Line 1455 of yacc.c  */
-#line 124 "Rachas.y"
+#line 125 "Rachas.y"
     {(yyval.numberF) = (yyvsp[(1) - (3)].numberF) - (yyvsp[(3) - (3)].numberF);}
     break;
 
   case 17:
 
 /* Line 1455 of yacc.c  */
-#line 125 "Rachas.y"
+#line 126 "Rachas.y"
     {(yyval.numberF) = (yyvsp[(1) - (3)].numberF) / (yyvsp[(3) - (3)].numberF);}
     break;
 
   case 18:
 
 /* Line 1455 of yacc.c  */
-#line 126 "Rachas.y"
+#line 127 "Rachas.y"
     {(yyval.numberF) = (yyvsp[(1) - (3)].numberF) * (yyvsp[(3) - (3)].numberF);}
     break;
 
   case 19:
 
 /* Line 1455 of yacc.c  */
-#line 127 "Rachas.y"
+#line 128 "Rachas.y"
     {;}
     break;
 
   case 20:
 
 /* Line 1455 of yacc.c  */
-#line 130 "Rachas.y"
+#line 131 "Rachas.y"
     {(yyval.numberF) = (float)(yyvsp[(1) - (1)].numberI);}
     break;
 
   case 21:
 
 /* Line 1455 of yacc.c  */
-#line 131 "Rachas.y"
+#line 132 "Rachas.y"
     {(yyval.numberF) = (yyvsp[(1) - (1)].numberF);}
     break;
 
   case 22:
 
 /* Line 1455 of yacc.c  */
-#line 132 "Rachas.y"
+#line 133 "Rachas.y"
     {(yyval.numberF) = getNumber(iniNode,(yyvsp[(1) - (1)].str));}
     break;
 
   case 23:
 
 /* Line 1455 of yacc.c  */
-#line 135 "Rachas.y"
+#line 136 "Rachas.y"
     {agregarNumero(iniNode,(yyvsp[(1) - (3)].str),(yyvsp[(3) - (3)].numberF));}
     break;
 
   case 24:
 
 /* Line 1455 of yacc.c  */
-#line 136 "Rachas.y"
+#line 137 "Rachas.y"
     {nombrarVector(iniNodeVector, (yyvsp[(1) - (5)].str), (yyvsp[(4) - (5)].vec));}
     break;
 
   case 25:
 
 /* Line 1455 of yacc.c  */
-#line 139 "Rachas.y"
+#line 140 "Rachas.y"
     {(yyval.vec) = crearVectorEle((yyvsp[(1) - (1)].numberF));}
     break;
 
   case 26:
 
 /* Line 1455 of yacc.c  */
-#line 140 "Rachas.y"
+#line 141 "Rachas.y"
     {(yyval.vec) = agregarVectorEle((yyvsp[(1) - (2)].vec),crearVectorEle((yyvsp[(2) - (2)].numberF)));}
     break;
 
   case 27:
 
 /* Line 1455 of yacc.c  */
-#line 143 "Rachas.y"
+#line 144 "Rachas.y"
     {(yyval.numberF) = sec((yyvsp[(3) - (4)].numberF));}
     break;
 
   case 28:
 
 /* Line 1455 of yacc.c  */
-#line 144 "Rachas.y"
+#line 145 "Rachas.y"
     {(yyval.numberF) = csc((yyvsp[(3) - (4)].numberF));}
     break;
 
   case 29:
 
 /* Line 1455 of yacc.c  */
-#line 145 "Rachas.y"
+#line 146 "Rachas.y"
     {(yyval.numberF) = cot((yyvsp[(3) - (4)].numberF));}
     break;
 
   case 30:
 
 /* Line 1455 of yacc.c  */
-#line 146 "Rachas.y"
+#line 147 "Rachas.y"
     {(yyval.numberF) = sin((yyvsp[(3) - (4)].numberF));}
     break;
 
   case 31:
 
 /* Line 1455 of yacc.c  */
-#line 147 "Rachas.y"
+#line 148 "Rachas.y"
     {(yyval.numberF) = cos((yyvsp[(3) - (4)].numberF));}
     break;
 
   case 32:
 
 /* Line 1455 of yacc.c  */
-#line 148 "Rachas.y"
+#line 149 "Rachas.y"
     {(yyval.numberF) = tan((yyvsp[(3) - (4)].numberF));}
     break;
 
   case 33:
 
 /* Line 1455 of yacc.c  */
-#line 149 "Rachas.y"
+#line 150 "Rachas.y"
     {(yyval.numberF) = getRoot((yyvsp[(3) - (5)].numberF),(yyvsp[(4) - (5)].numberF));}
     break;
 
   case 34:
 
 /* Line 1455 of yacc.c  */
-#line 150 "Rachas.y"
+#line 151 "Rachas.y"
     {(yyval.numberF) = getExp((yyvsp[(3) - (5)].numberF),(yyvsp[(4) - (5)].numberF));}
     break;
 
   case 35:
 
 /* Line 1455 of yacc.c  */
-#line 151 "Rachas.y"
+#line 152 "Rachas.y"
     {(yyval.numberF) = getLog((yyvsp[(3) - (5)].numberF),(yyvsp[(4) - (5)].numberF));}
     break;
 
 
 
 /* Line 1455 of yacc.c  */
-#line 1768 "y.tab.c"
+#line 1769 "y.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1976,7 +1977,7 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 154 "Rachas.y"
+#line 155 "Rachas.y"
 
 
 ///////////////////Estructuras
@@ -2086,9 +2087,9 @@ void salidaVector(char* nombre, VectorIni* head){
     }
 }
 
-/////////////////////Estructuras
+/* Fin Estructuras */
 
-/* Funciones Incluidas*/
+/* Inicio Funciones Incluidas*/
 
 /* Funciones Trigonométricas */
 
@@ -2120,17 +2121,11 @@ float getLog(float base, float argumento) {
 
 /* Funciones Estadísticas */
 
-double getSumatoria(double datos[], int size)
-{
-    double sum = 0;
-    for (int i = 0; i < size; i++)
-    {
-        sum += datos[i];
-    }
-    return sum;
-}
+//Necesito ayuda para recorrer los vectores uwu
 
-/*Main de ejecución */
+/* Fin Funciones Incluidas*/
+
+/*  Main de ejecución   */
 
 int main (int argc, char **argv) {
     iniNode = crearNumero("PrimerVarialbeReservada", 0);
