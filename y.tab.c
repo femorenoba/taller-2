@@ -114,6 +114,29 @@ typedef struct MatrizIni{
     struct MatrizIni* next;
 } MatrizIni; 
 
+typedef struct MatrizProfIni{
+    struct MatrizProf* matrizProfeleme;
+    char* nombre;
+    struct MatrizProfIni* next;
+} MatrizProfIni; 
+
+typedef struct MatrizProf{              //Bloque i
+    struct NodoVector* nextEleNodoVect; //Apuntamos al primer NodoVector [j]
+    int num;                            //ID
+    struct MatrizProf* nextMatrizProf;  //Apuntamos al segundo elemento de la MatrizProf [i]
+} MatrizProf;
+
+typedef struct MatrizProfNombre{
+    struct MatrizProf* matrizProf;
+    char* nombre;
+    struct MatrizProfNombre* nextMatrizProf;
+} MatrizProfNombre;
+
+typedef struct NodoVector{              //Matrices n_ij
+    struct VectorEle* nextEleVector;    //Apuntamos al primer elemento del VectorEle [k]
+    int num;                            //ID
+    struct NodoVector* nextNodoVector;  //Apuntamos al segundo elemento del NodoVector [j]
+} NodoVector;
 
 // Declaracion de funciones
 Number* crearNumero(char* nombre, float valor);
@@ -136,16 +159,24 @@ MatrizFila* agregarFila(MatrizFila* fila, VectorEle* elementos);
 MatrizIni* crearMatrizIni(char* nombre, MatrizFila* fila);
 char* nombrarMatriz(char* nombre, MatrizFila* fila, MatrizIni* nodoIni );
 void salidaMatriz(char* nombre, MatrizIni* nodoIni);
+MatrizProf* crearMatrizProf(int numero, NodoVector* nextNodoVect);
+MatrizProf* agregarProf(MatrizProf* matrizProfOriginal, NodoVector* nextNodoVect);
+MatrizProfIni* crearMatrizProfIni(char* nombre, MatrizProf* matrizProf);
+bool crearPrimeroMatrizProd(char* name, MatrizProf* matrizProf);
+char* nombrarMatrizProf(char* name, MatrizProf* prof, MatrizProfIni* nodoIni);
+NodoVector* crearNodoVector(int numero, VectorEle* nextEVector);
+NodoVector* agregarNodoVector(NodoVector* nodoVectorOriginal, VectorEle* nextEVector);
 
 // Inicializacion atributos
 Number* iniNode = NULL;
 VectorIni* iniNodeVector = NULL;
 MatrizIni* iniNodeMatriz = NULL;
+MatrizProfIni* iniMatrizProf = NULL;
 
 
 
 /* Line 189 of yacc.c  */
-#line 149 "y.tab.c"
+#line 180 "y.tab.c"
 
 /* Enabling traces.  */
 #ifndef YYDEBUG
@@ -238,7 +269,7 @@ typedef union YYSTYPE
 {
 
 /* Line 214 of yacc.c  */
-#line 76 "Rachas.y"
+#line 107 "Rachas.y"
 
     char* str;
     int numberI;
@@ -249,7 +280,7 @@ typedef union YYSTYPE
 
 
 /* Line 214 of yacc.c  */
-#line 253 "y.tab.c"
+#line 284 "y.tab.c"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
@@ -261,7 +292,7 @@ typedef union YYSTYPE
 
 
 /* Line 264 of yacc.c  */
-#line 265 "y.tab.c"
+#line 296 "y.tab.c"
 
 #ifdef short
 # undef short
@@ -483,7 +514,7 @@ union yyalloc
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  8
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  40
+#define YYNRULES  41
 /* YYNRULES -- Number of states.  */
 #define YYNSTATES  118
 
@@ -537,7 +568,7 @@ static const yytype_uint8 yyprhs[] =
       33,    40,    46,    52,    59,    65,    72,    74,    78,    82,
       86,    90,    92,    94,    96,    98,   102,   108,   114,   116,
      119,   124,   129,   134,   139,   144,   149,   155,   161,   167,
-     171
+     171,   176
 };
 
 /* YYRHS -- A `-1'-separated list of the rules' RHS.  */
@@ -560,17 +591,17 @@ static const yytype_int8 yyrhs[] =
        3,    37,     4,    -1,    19,     3,    37,     4,    -1,    23,
        3,    37,    37,     4,    -1,    24,     3,    37,    37,     4,
       -1,    25,     3,    37,    37,     4,    -1,     9,    40,    10,
-      -1,    42,     9,    40,    10,    -1
+      -1,    42,     9,    40,    10,    -1,    -1
 };
 
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,   128,   128,   129,   130,   131,   132,   133,   134,   135,
-     136,   137,   138,   139,   140,   141,   144,   145,   146,   147,
-     148,   149,   152,   153,   154,   157,   158,   159,   162,   163,
-     166,   167,   168,   169,   170,   171,   172,   173,   174,   177,
-     178
+       0,   159,   159,   160,   161,   162,   163,   164,   165,   166,
+     167,   168,   169,   170,   171,   172,   175,   176,   177,   178,
+     179,   180,   183,   184,   185,   188,   189,   190,   193,   194,
+     197,   198,   199,   200,   201,   202,   203,   204,   205,   208,
+     209,   210
 };
 #endif
 
@@ -608,7 +639,7 @@ static const yytype_uint8 yyr1[] =
       36,    36,    36,    36,    36,    36,    37,    37,    37,    37,
       37,    37,    38,    38,    38,    39,    39,    39,    40,    40,
       41,    41,    41,    41,    41,    41,    41,    41,    41,    42,
-      42
+      42,    42
 };
 
 /* YYR2[YYN] -- Number of symbols composing right hand side of rule YYN.  */
@@ -618,7 +649,7 @@ static const yytype_uint8 yyr2[] =
        6,     5,     5,     6,     5,     6,     1,     3,     3,     3,
        3,     1,     1,     1,     1,     3,     5,     5,     1,     2,
        4,     4,     4,     4,     4,     4,     5,     5,     5,     3,
-       4
+       4,     0
 };
 
 /* YYDEFACT[STATE-NAME] -- Default rule to reduce with in state
@@ -632,7 +663,7 @@ static const yytype_uint8 yydefact[] =
        0,     0,     0,     0,     1,     0,     0,     0,     0,     2,
        0,     0,     0,     0,     0,     0,     5,     3,     8,    24,
        0,    21,     0,     0,    24,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,    25,     0,     0,     0,
+       0,     0,     0,     0,     0,    41,    25,     0,     0,     0,
        4,     7,    17,    18,    20,    19,     6,     0,     0,     0,
        0,    33,    34,    35,    32,    30,    31,     0,     0,     0,
       28,     0,     0,     0,     0,     0,     0,    11,     9,    12,
@@ -1565,280 +1596,280 @@ yyreduce:
         case 2:
 
 /* Line 1455 of yacc.c  */
-#line 128 "Rachas.y"
+#line 159 "Rachas.y"
     {;}
     break;
 
   case 3:
 
 /* Line 1455 of yacc.c  */
-#line 129 "Rachas.y"
+#line 160 "Rachas.y"
     {;}
     break;
 
   case 4:
 
 /* Line 1455 of yacc.c  */
-#line 130 "Rachas.y"
+#line 161 "Rachas.y"
     {;}
     break;
 
   case 5:
 
 /* Line 1455 of yacc.c  */
-#line 131 "Rachas.y"
+#line 162 "Rachas.y"
     {;}
     break;
 
   case 6:
 
 /* Line 1455 of yacc.c  */
-#line 132 "Rachas.y"
+#line 163 "Rachas.y"
     {;}
     break;
 
   case 7:
 
 /* Line 1455 of yacc.c  */
-#line 133 "Rachas.y"
+#line 164 "Rachas.y"
     {;}
     break;
 
   case 8:
 
 /* Line 1455 of yacc.c  */
-#line 134 "Rachas.y"
+#line 165 "Rachas.y"
     {;}
     break;
 
   case 9:
 
 /* Line 1455 of yacc.c  */
-#line 135 "Rachas.y"
+#line 166 "Rachas.y"
     {printf("%f \n",(yyvsp[(3) - (5)].numberF));}
     break;
 
   case 10:
 
 /* Line 1455 of yacc.c  */
-#line 136 "Rachas.y"
+#line 167 "Rachas.y"
     {printf("%f \n",(yyvsp[(4) - (6)].numberF));}
     break;
 
   case 11:
 
 /* Line 1455 of yacc.c  */
-#line 137 "Rachas.y"
+#line 168 "Rachas.y"
     {printf("%s : %f", (yyvsp[(3) - (5)].str), getNumber(iniNode,(yyvsp[(3) - (5)].str)));}
     break;
 
   case 12:
 
 /* Line 1455 of yacc.c  */
-#line 138 "Rachas.y"
+#line 169 "Rachas.y"
     {salidaVector((yyvsp[(3) - (5)].str),iniNodeVector );}
     break;
 
   case 13:
 
 /* Line 1455 of yacc.c  */
-#line 139 "Rachas.y"
+#line 170 "Rachas.y"
     {salidaVector((yyvsp[(4) - (6)].str),iniNodeVector );}
     break;
 
   case 14:
 
 /* Line 1455 of yacc.c  */
-#line 140 "Rachas.y"
+#line 171 "Rachas.y"
     {salidaMatriz((yyvsp[(3) - (5)].str),iniNodeMatriz );}
     break;
 
   case 15:
 
 /* Line 1455 of yacc.c  */
-#line 141 "Rachas.y"
+#line 172 "Rachas.y"
     {salidaMatriz((yyvsp[(4) - (6)].str),iniNodeMatriz );}
     break;
 
   case 16:
 
 /* Line 1455 of yacc.c  */
-#line 144 "Rachas.y"
+#line 175 "Rachas.y"
     {(yyval.numberF) = (yyvsp[(1) - (1)].numberF);}
     break;
 
   case 17:
 
 /* Line 1455 of yacc.c  */
-#line 145 "Rachas.y"
+#line 176 "Rachas.y"
     {(yyval.numberF) = (yyvsp[(1) - (3)].numberF) + (yyvsp[(3) - (3)].numberF);}
     break;
 
   case 18:
 
 /* Line 1455 of yacc.c  */
-#line 146 "Rachas.y"
+#line 177 "Rachas.y"
     {(yyval.numberF) = (yyvsp[(1) - (3)].numberF) - (yyvsp[(3) - (3)].numberF);}
     break;
 
   case 19:
 
 /* Line 1455 of yacc.c  */
-#line 147 "Rachas.y"
+#line 178 "Rachas.y"
     {(yyval.numberF) = (yyvsp[(1) - (3)].numberF) / (yyvsp[(3) - (3)].numberF);}
     break;
 
   case 20:
 
 /* Line 1455 of yacc.c  */
-#line 148 "Rachas.y"
+#line 179 "Rachas.y"
     {(yyval.numberF) = (yyvsp[(1) - (3)].numberF) * (yyvsp[(3) - (3)].numberF);}
     break;
 
   case 21:
 
 /* Line 1455 of yacc.c  */
-#line 149 "Rachas.y"
+#line 180 "Rachas.y"
     {;}
     break;
 
   case 22:
 
 /* Line 1455 of yacc.c  */
-#line 152 "Rachas.y"
+#line 183 "Rachas.y"
     {(yyval.numberF) = (float)(yyvsp[(1) - (1)].numberI);}
     break;
 
   case 23:
 
 /* Line 1455 of yacc.c  */
-#line 153 "Rachas.y"
+#line 184 "Rachas.y"
     {(yyval.numberF) = (yyvsp[(1) - (1)].numberF);}
     break;
 
   case 24:
 
 /* Line 1455 of yacc.c  */
-#line 154 "Rachas.y"
+#line 185 "Rachas.y"
     {(yyval.numberF) = getNumber(iniNode,(yyvsp[(1) - (1)].str));}
     break;
 
   case 25:
 
 /* Line 1455 of yacc.c  */
-#line 157 "Rachas.y"
+#line 188 "Rachas.y"
     {agregarNumero(iniNode,(yyvsp[(1) - (3)].str),(yyvsp[(3) - (3)].numberF));}
     break;
 
   case 26:
 
 /* Line 1455 of yacc.c  */
-#line 158 "Rachas.y"
+#line 189 "Rachas.y"
     {nombrarVector(iniNodeVector, (yyvsp[(1) - (5)].str), (yyvsp[(4) - (5)].vec));}
     break;
 
   case 27:
 
 /* Line 1455 of yacc.c  */
-#line 159 "Rachas.y"
+#line 190 "Rachas.y"
     {nombrarMatriz((yyvsp[(1) - (5)].str), (yyvsp[(4) - (5)].matx),iniNodeMatriz);}
     break;
 
   case 28:
 
 /* Line 1455 of yacc.c  */
-#line 162 "Rachas.y"
+#line 193 "Rachas.y"
     {(yyval.vec) = crearVectorEle((yyvsp[(1) - (1)].numberF));}
     break;
 
   case 29:
 
 /* Line 1455 of yacc.c  */
-#line 163 "Rachas.y"
+#line 194 "Rachas.y"
     {(yyval.vec) = agregarVectorEle((yyvsp[(1) - (2)].vec),crearVectorEle((yyvsp[(2) - (2)].numberF)));}
     break;
 
   case 30:
 
 /* Line 1455 of yacc.c  */
-#line 166 "Rachas.y"
+#line 197 "Rachas.y"
     {(yyval.numberF) = sec((yyvsp[(3) - (4)].numberF));}
     break;
 
   case 31:
 
 /* Line 1455 of yacc.c  */
-#line 167 "Rachas.y"
+#line 198 "Rachas.y"
     {(yyval.numberF) = csc((yyvsp[(3) - (4)].numberF));}
     break;
 
   case 32:
 
 /* Line 1455 of yacc.c  */
-#line 168 "Rachas.y"
+#line 199 "Rachas.y"
     {(yyval.numberF) = cot((yyvsp[(3) - (4)].numberF));}
     break;
 
   case 33:
 
 /* Line 1455 of yacc.c  */
-#line 169 "Rachas.y"
+#line 200 "Rachas.y"
     {(yyval.numberF) = sin((yyvsp[(3) - (4)].numberF));}
     break;
 
   case 34:
 
 /* Line 1455 of yacc.c  */
-#line 170 "Rachas.y"
+#line 201 "Rachas.y"
     {(yyval.numberF) = cos((yyvsp[(3) - (4)].numberF));}
     break;
 
   case 35:
 
 /* Line 1455 of yacc.c  */
-#line 171 "Rachas.y"
+#line 202 "Rachas.y"
     {(yyval.numberF) = tan((yyvsp[(3) - (4)].numberF));}
     break;
 
   case 36:
 
 /* Line 1455 of yacc.c  */
-#line 172 "Rachas.y"
+#line 203 "Rachas.y"
     {(yyval.numberF) = getRoot((yyvsp[(3) - (5)].numberF),(yyvsp[(4) - (5)].numberF));}
     break;
 
   case 37:
 
 /* Line 1455 of yacc.c  */
-#line 173 "Rachas.y"
+#line 204 "Rachas.y"
     {(yyval.numberF) = getExp((yyvsp[(3) - (5)].numberF),(yyvsp[(4) - (5)].numberF));}
     break;
 
   case 38:
 
 /* Line 1455 of yacc.c  */
-#line 174 "Rachas.y"
+#line 205 "Rachas.y"
     {(yyval.numberF) = getLog((yyvsp[(3) - (5)].numberF),(yyvsp[(4) - (5)].numberF));}
     break;
 
   case 39:
 
 /* Line 1455 of yacc.c  */
-#line 177 "Rachas.y"
+#line 208 "Rachas.y"
     {(yyval.matx) = crearFila(0, (yyvsp[(2) - (3)].vec));}
     break;
 
   case 40:
 
 /* Line 1455 of yacc.c  */
-#line 178 "Rachas.y"
+#line 209 "Rachas.y"
     {(yyval.matx) = agregarFila((yyvsp[(1) - (4)].matx), (yyvsp[(3) - (4)].vec));}
     break;
 
 
 
 /* Line 1455 of yacc.c  */
-#line 1842 "y.tab.c"
+#line 1873 "y.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -2050,7 +2081,7 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 180 "Rachas.y"
+#line 212 "Rachas.y"
 
 
 ///////////////////Estructuras
@@ -2098,7 +2129,7 @@ float getNumber(Number* head, char* nombre){
     return 0.0000001;
 }
 
-// Para la creacion de vectores
+// Vectores
 
 VectorIni* crearVectorIni(char* nombre, VectorEle* elementos){
     VectorIni* vectorIni;
@@ -2164,7 +2195,8 @@ void salidaVector(char* nombre, VectorIni* head){
     }
 }
 
-// Para la creacion de matrices
+// Matrices
+
 MatrizFila* crearFila(int numero, VectorEle* elementos){
     MatrizFila* matrizFila;
     matrizFila = (MatrizFila*)malloc(sizeof(matrizFila));
@@ -2271,7 +2303,97 @@ void salidaMatriz(char* nombre, MatrizIni* nodoIni){
     }
 }
 
+
+// Matrices Profundidad / Bloques
+MatrizProf* crearMatrizProf(int numero, NodoVector* nextNodoVect){      //Bloque i
+    MatrizProf* matrizProf;
+    matrizProf = (MatrizProf*)malloc(sizeof(matrizProf));
+    matrizProf->num = numero;
+    matrizProf->nextEleNodoVect = nextNodoVect;
+    matrizProf->nextMatrizProf = NULL;
+    return matrizProf;
+}
+
+MatrizProf* agregarProf(MatrizProf* matrizProfOriginal, NodoVector* nextNodoVect){
+    MatrizProf* profOriginal = matrizProfOriginal;
+    while(matrizProfOriginal->nextMatrizProf != NULL){
+        matrizProfOriginal = matrizProfOriginal->nextMatrizProf;
+    }
+    int num = matrizProfOriginal->num;
+    MatrizProf* nuevaMatrizProf = crearMatrizProf(num+1, nextNodoVect);
+    matrizProfOriginal->nextMatrizProf = nuevaMatrizProf;
+    return nuevaMatrizProf;
+}
+
+MatrizProfIni* crearMatrizProfIni(char* nombre, MatrizProf* matrizProf){
+    MatrizProfIni* matrizProfIni;
+    matrizProfIni = (MatrizProfIni*)malloc(sizeof(matrizProfIni));
+    matrizProfIni->matrizProfeleme = matrizProf;
+    matrizProfIni->nombre = nombre;
+    matrizProfIni->next = NULL;
+    return matrizProfIni;
+}
+
+bool crearPrimeroMatrizProf(char* name, MatrizProf* matrizProf){
+    if(iniMatrizProf == NULL){
+        MatrizProfIni* matrizProfInicial;
+        matrizProfInicial = (MatrizProfIni*)malloc(sizeof(matrizProfInicial));
+        matrizProfInicial->matrizProfeleme=matrizProf;
+        matrizProfInicial->nombre=name;
+        matrizProfInicial->next=NULL;
+        iniMatrizProf = matrizProfInicial;
+        return true;
+    } else {
+        return false;
+    }
+}
+
+char* nombrarMatrizProf(char* name, MatrizProf* prof, MatrizProfIni* nodoIni){
+    if(crearPrimeroMatrizProf(name, prof)==true){
+        return name;
+    } else{
+        while(nodoIni->next != NULL){
+            if(strcmp(nodoIni->nombre, name) == 0){
+                nodoIni->matrizProfeleme = prof;
+                return name;
+            }
+            nodoIni = nodoIni-> next;
+        }
+        if(strcmp(nodoIni->nombre, name) == 0){
+            nodoIni->matrizProfeleme = prof;
+            return name;
+        }
+        MatrizProfIni* nuevoNodo = crearMatrizProfIni(name, prof);
+        nodoIni->next = nuevoNodo;
+        return nuevoNodo->nombre;
+    }
+}
+
+// Nodos Vectores / Matriz n_ij
+NodoVector* crearNodoVector(int numero, VectorEle* nextEVector){
+    NodoVector* nodoVector;
+    nodoVector = (NodoVector*)malloc(sizeof(nodoVector));
+    nodoVector->num = numero;
+    nodoVector->nextEleVector = nextEVector;
+    nodoVector->nextNodoVector = NULL;
+    return nodoVector;
+}
+
+NodoVector* agregarNodoVector(NodoVector* nodoVectorOriginal, VectorEle* nextEVector){
+    NodoVector* vectorOriginal = nodoVectorOriginal;
+    while(nodoVectorOriginal->nextNodoVector != NULL){
+        nodoVectorOriginal = nodoVectorOriginal->nextNodoVector;
+    }
+    int num = nodoVectorOriginal->num;
+    NodoVector* nuevoNodoVector = crearNodoVector(num+1, nextEVector);
+    nodoVectorOriginal->nextNodoVector = nuevoNodoVector;
+    return nuevoNodoVector;
+}
+
+
+
 /* Fin Estructuras */
+
 
 /* Inicio Funciones Incluidas*/
 

@@ -43,17 +43,29 @@ typedef struct MatrizIni{
     struct MatrizIni* next;
 } MatrizIni; 
 
+typedef struct MatrizProfIni{
+    struct MatrizProf* matrizProfeleme;
+    char* nombre;
+    struct MatrizProfIni* next;
+} MatrizProfIni; 
+
 typedef struct MatrizProf{              //Bloque i
     struct NodoVector* nextEleNodoVect; //Apuntamos al primer NodoVector [j]
     int num;                            //ID
     struct MatrizProf* nextMatrizProf;  //Apuntamos al segundo elemento de la MatrizProf [i]
 } MatrizProf;
 
+typedef struct MatrizProfNombre{
+    struct MatrizProf* matrizProf;
+    char* nombre;
+    struct MatrizProfNombre* nextMatrizProf;
+} MatrizProfNombre;
+
 typedef struct NodoVector{              //Matrices n_ij
     struct VectorEle* nextEleVector;    //Apuntamos al primer elemento del VectorEle [k]
-    int numNodoVector;                  //ID
+    int num;                            //ID
     struct NodoVector* nextNodoVector;  //Apuntamos al segundo elemento del NodoVector [j]
-} NodoVector
+} NodoVector;
 
 // Declaracion de funciones
 Number* crearNumero(char* nombre, float valor);
@@ -76,11 +88,19 @@ MatrizFila* agregarFila(MatrizFila* fila, VectorEle* elementos);
 MatrizIni* crearMatrizIni(char* nombre, MatrizFila* fila);
 char* nombrarMatriz(char* nombre, MatrizFila* fila, MatrizIni* nodoIni );
 void salidaMatriz(char* nombre, MatrizIni* nodoIni);
+MatrizProf* crearMatrizProf(int numero, NodoVector* nextNodoVect);
+MatrizProf* agregarProf(MatrizProf* matrizProfOriginal, NodoVector* nextNodoVect);
+MatrizProfIni* crearMatrizProfIni(char* nombre, MatrizProf* matrizProf);
+bool crearPrimeroMatrizProd(char* name, MatrizProf* matrizProf);
+char* nombrarMatrizProf(char* name, MatrizProf* prof, MatrizProfIni* nodoIni);
+NodoVector* crearNodoVector(int numero, VectorEle* nextEVector);
+NodoVector* agregarNodoVector(NodoVector* nodoVectorOriginal, VectorEle* nextEVector);
 
 // Inicializacion atributos
 Number* iniNode = NULL;
 VectorIni* iniNodeVector = NULL;
 MatrizIni* iniNodeMatriz = NULL;
+MatrizProfIni* iniMatrizProf = NULL;
 
 %}
 
@@ -187,6 +207,7 @@ functs  : SEC PARENTESISA expr PARENTESISB              {$$ = sec($3);}
 	
 matriz  : CORCHETEA vector CORCHETEB			        {$$ = crearFila(0, $2);}
         | matriz CORCHETEA vector CORCHETEB             {$$ = agregarFila($1, $3);}
+        | 
         ;
 %%
 
@@ -235,7 +256,7 @@ float getNumber(Number* head, char* nombre){
     return 0.0000001;
 }
 
-// Para la creacion de vectores
+// Vectores
 
 VectorIni* crearVectorIni(char* nombre, VectorEle* elementos){
     VectorIni* vectorIni;
@@ -301,7 +322,8 @@ void salidaVector(char* nombre, VectorIni* head){
     }
 }
 
-// Para la creacion de matrices
+// Matrices
+
 MatrizFila* crearFila(int numero, VectorEle* elementos){
     MatrizFila* matrizFila;
     matrizFila = (MatrizFila*)malloc(sizeof(matrizFila));
@@ -408,7 +430,97 @@ void salidaMatriz(char* nombre, MatrizIni* nodoIni){
     }
 }
 
+
+// Matrices Profundidad / Bloques
+MatrizProf* crearMatrizProf(int numero, NodoVector* nextNodoVect){      //Bloque i
+    MatrizProf* matrizProf;
+    matrizProf = (MatrizProf*)malloc(sizeof(matrizProf));
+    matrizProf->num = numero;
+    matrizProf->nextEleNodoVect = nextNodoVect;
+    matrizProf->nextMatrizProf = NULL;
+    return matrizProf;
+}
+
+MatrizProf* agregarProf(MatrizProf* matrizProfOriginal, NodoVector* nextNodoVect){
+    MatrizProf* profOriginal = matrizProfOriginal;
+    while(matrizProfOriginal->nextMatrizProf != NULL){
+        matrizProfOriginal = matrizProfOriginal->nextMatrizProf;
+    }
+    int num = matrizProfOriginal->num;
+    MatrizProf* nuevaMatrizProf = crearMatrizProf(num+1, nextNodoVect);
+    matrizProfOriginal->nextMatrizProf = nuevaMatrizProf;
+    return nuevaMatrizProf;
+}
+
+MatrizProfIni* crearMatrizProfIni(char* nombre, MatrizProf* matrizProf){
+    MatrizProfIni* matrizProfIni;
+    matrizProfIni = (MatrizProfIni*)malloc(sizeof(matrizProfIni));
+    matrizProfIni->matrizProfeleme = matrizProf;
+    matrizProfIni->nombre = nombre;
+    matrizProfIni->next = NULL;
+    return matrizProfIni;
+}
+
+bool crearPrimeroMatrizProf(char* name, MatrizProf* matrizProf){
+    if(iniMatrizProf == NULL){
+        MatrizProfIni* matrizProfInicial;
+        matrizProfInicial = (MatrizProfIni*)malloc(sizeof(matrizProfInicial));
+        matrizProfInicial->matrizProfeleme=matrizProf;
+        matrizProfInicial->nombre=name;
+        matrizProfInicial->next=NULL;
+        iniMatrizProf = matrizProfInicial;
+        return true;
+    } else {
+        return false;
+    }
+}
+
+char* nombrarMatrizProf(char* name, MatrizProf* prof, MatrizProfIni* nodoIni){
+    if(crearPrimeroMatrizProf(name, prof)==true){
+        return name;
+    } else{
+        while(nodoIni->next != NULL){
+            if(strcmp(nodoIni->nombre, name) == 0){
+                nodoIni->matrizProfeleme = prof;
+                return name;
+            }
+            nodoIni = nodoIni-> next;
+        }
+        if(strcmp(nodoIni->nombre, name) == 0){
+            nodoIni->matrizProfeleme = prof;
+            return name;
+        }
+        MatrizProfIni* nuevoNodo = crearMatrizProfIni(name, prof);
+        nodoIni->next = nuevoNodo;
+        return nuevoNodo->nombre;
+    }
+}
+
+// Nodos Vectores / Matriz n_ij
+NodoVector* crearNodoVector(int numero, VectorEle* nextEVector){
+    NodoVector* nodoVector;
+    nodoVector = (NodoVector*)malloc(sizeof(nodoVector));
+    nodoVector->num = numero;
+    nodoVector->nextEleVector = nextEVector;
+    nodoVector->nextNodoVector = NULL;
+    return nodoVector;
+}
+
+NodoVector* agregarNodoVector(NodoVector* nodoVectorOriginal, VectorEle* nextEVector){
+    NodoVector* vectorOriginal = nodoVectorOriginal;
+    while(nodoVectorOriginal->nextNodoVector != NULL){
+        nodoVectorOriginal = nodoVectorOriginal->nextNodoVector;
+    }
+    int num = nodoVectorOriginal->num;
+    NodoVector* nuevoNodoVector = crearNodoVector(num+1, nextEVector);
+    nodoVectorOriginal->nextNodoVector = nuevoNodoVector;
+    return nuevoNodoVector;
+}
+
+
+
 /* Fin Estructuras */
+
 
 /* Inicio Funciones Incluidas*/
 
