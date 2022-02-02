@@ -43,6 +43,17 @@ typedef struct MatrizIni{
     struct MatrizIni* next;
 } MatrizIni; 
 
+typedef struct MatrizProf{              //Bloque i
+    struct NodoVector* nextEleNodoVect; //Apuntamos al primer NodoVector [j]
+    int num;                            //ID
+    struct MatrizProf* nextMatrizProf;  //Apuntamos al segundo elemento de la MatrizProf [i]
+} MatrizProf;
+
+typedef struct NodoVector{              //Matrices n_ij
+    struct VectorEle* nextEleVector;    //Apuntamos al primer elemento del VectorEle [k]
+    int numNodoVector;                  //ID
+    struct NodoVector* nextNodoVector;  //Apuntamos al segundo elemento del NodoVector [j]
+} NodoVector
 
 // Declaracion de funciones
 Number* crearNumero(char* nombre, float valor);
