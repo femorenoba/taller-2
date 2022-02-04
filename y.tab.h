@@ -62,10 +62,13 @@
      GETROOT = 278,
      GETEXP = 279,
      GETLOG = 280,
-     ID = 281,
-     NUMERO_ENTERO = 282,
-     NUMERO_FLOTANTE = 283,
-     LOGICA = 284
+     PA = 281,
+     PB = 282,
+     OR = 283,
+     ID = 284,
+     NUMERO_ENTERO = 285,
+     NUMERO_FLOTANTE = 286,
+     LOGICA = 287
    };
 #endif
 /* Tokens.  */
@@ -92,10 +95,13 @@
 #define GETROOT 278
 #define GETEXP 279
 #define GETLOG 280
-#define ID 281
-#define NUMERO_ENTERO 282
-#define NUMERO_FLOTANTE 283
-#define LOGICA 284
+#define PA 281
+#define PB 282
+#define OR 283
+#define ID 284
+#define NUMERO_ENTERO 285
+#define NUMERO_FLOTANTE 286
+#define LOGICA 287
 
 
 
@@ -112,11 +118,13 @@ typedef union YYSTYPE
     float numberF;
     struct VectorEle* vec;
     struct MatrizFila* matx;
+    struct NodoVector* nodx;
+    struct MatrizProf* mProf;
 
 
 
 /* Line 1676 of yacc.c  */
-#line 120 "y.tab.h"
+#line 128 "y.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

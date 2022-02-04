@@ -110,6 +110,8 @@ MatrizProfIni* iniMatrizProf = NULL;
     float numberF;
     struct VectorEle* vec;
     struct MatrizFila* matx;
+    struct NodoVector* nodx;
+    struct MatrizProf* mProf;
 }
 
 %start line 
@@ -136,6 +138,9 @@ MatrizProfIni* iniMatrizProf = NULL;
 %token GETROOT
 %token GETEXP
 %token GETLOG
+%token PA
+%token PB
+%token OR
 
 %token<str> ID   
 %token<numberI> NUMERO_ENTERO
@@ -148,7 +153,9 @@ MatrizProfIni* iniMatrizProf = NULL;
 %type <str> indent
 %type <vec> vector
 %type <numberF> functs
-%type<matx> matriz
+%type <matx> matriz
+%type <mProf> bloque
+%type <nodx> vectorN
 
 %left '+' '-'
 %left '*' '/'
@@ -187,7 +194,8 @@ term    : NUMERO_ENTERO                                 {$<numberF>$ = (float)$1
 
 indent  : ID ASIGNACION expr                            {agregarNumero(iniNode,$1,$3);}
         | ID ASIGNACION CORCHETEA vector CORCHETEB      {nombrarVector(iniNodeVector, $1, $4);}
-	    | ID ASIGNACION LLAVESA matriz LLAVESB          {nombrarMatriz($1, $4,iniNodeMatriz);}
+	    | ID ASIGNACION LLAVESA matriz LLAVESB          {nombrarMatriz($1, $4, iniNodeMatriz);}
+        | ID ASIGNACION LLAVESA bloque LLAVESB          {nombrarMatrizProf($1, $4, iniMatrizProf);}
         ;
 
 vector  : term                                          {$$ = crearVectorEle($1);}
@@ -207,8 +215,22 @@ functs  : SEC PARENTESISA expr PARENTESISB              {$$ = sec($3);}
 	
 matriz  : CORCHETEA vector CORCHETEB			        {$$ = crearFila(0, $2);}
         | matriz CORCHETEA vector CORCHETEB             {$$ = agregarFila($1, $3);}
-        | 
         ;
+
+vectorN : OR vector OR                    {$$ = crearNodoVector(0, $2);}
+        | vectorN OR vector OR            {$$ = agregarNodoVector($1, $3);}
+        ;
+
+bloque  : PARENTESISA vectorN PARENTESISB                               {printf("crear ");$$ = crearMatrizProf(0, $2);}
+        | bloque PARENTESISA vectorN PARENTESISB                        {printf("agragra ");$$ = agregarProf($1, $3);}
+        ;
+
+/*  j :={
+            ([2 3 4 4] [1 2] [4 -1 12 5])
+            ([22] [4 3 -0.5] [2.2 -5.6])
+        };
+*/
+
 %%
 
 ///////////////////Estructuras
@@ -494,6 +516,10 @@ char* nombrarMatrizProf(char* name, MatrizProf* prof, MatrizProfIni* nodoIni){
         nodoIni->next = nuevoNodo;
         return nuevoNodo->nombre;
     }
+}
+
+void salidaMatrizProf(){
+    
 }
 
 // Nodos Vectores / Matriz n_ij

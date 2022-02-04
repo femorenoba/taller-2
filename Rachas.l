@@ -55,6 +55,9 @@ operacion       \+|\-|\*|\/|\^|@|;|,
 \]					{return CORCHETEB;}
 \{					{return LLAVESA;}
 \}					{return LLAVESB;}
+\¿                  {return PA;}
+\?                  {return PB;}
+\|                  {return OR;}
 .                   {ECHO; yyerror ("unexpected character");}
 
 %%
