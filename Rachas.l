@@ -32,6 +32,7 @@ operacion       \+|\-|\*|\/|\^|@|;|,
 "vsalida"           {return VSALIDA;}
 "msalida"           {return MSALIDA;}
 "salida"            {return SALIDA;}
+"bsalida"           {return BSALIDA;}
 "sin"               {return SIN;}
 "cos"               {return COS;}
 "tan"               {return TAN;}

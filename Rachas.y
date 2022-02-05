@@ -95,6 +95,9 @@ bool crearPrimeroMatrizProd(char* name, MatrizProf* matrizProf);
 char* nombrarMatrizProf(char* name, MatrizProf* prof, MatrizProfIni* nodoIni);
 NodoVector* crearNodoVector(int numero, VectorEle* nextEVector);
 NodoVector* agregarNodoVector(NodoVector* nodoVectorOriginal, VectorEle* nextEVector);
+void salidaVectorEle(VectorEle* vector);
+void salidaNodoVector(NodoVector* nodoVector);
+void salidaMatrizProf(char* nombre);
 
 // Inicializacion atributos
 Number* iniNode = NULL;
@@ -141,6 +144,7 @@ MatrizProfIni* iniMatrizProf = NULL;
 %token PA
 %token PB
 %token OR
+%token BSALIDA
 
 %token<str> ID   
 %token<numberI> NUMERO_ENTERO
@@ -173,13 +177,16 @@ line    : line ';'                                      {;}
         | SALIDA PARENTESISA expr PARENTESISB ';'       {printf("%f \n",$3);}
         | line SALIDA PARENTESISA expr PARENTESISB ';'  {printf("%f \n",$4);}
         | SALIDA PARENTESISA ID PARENTESISB ';'         {printf("%s : %f", $3, getNumber(iniNode,$3));}
-        | VSALIDA PARENTESISA ID PARENTESISB ';'        {salidaVector($3,iniNodeVector );}
-        | line VSALIDA PARENTESISA ID PARENTESISB ';'   {salidaVector($4,iniNodeVector );}
-	    | MSALIDA PARENTESISA ID PARENTESISB ';'        {salidaMatriz($3,iniNodeMatriz );}
-        | line MSALIDA PARENTESISA ID PARENTESISB ';'   {salidaMatriz($4,iniNodeMatriz );}
+        | VSALIDA PARENTESISA ID PARENTESISB ';'        {salidaVector($3,iniNodeVector);}
+        | line VSALIDA PARENTESISA ID PARENTESISB ';'   {salidaVector($4,iniNodeVector);}
+	    | MSALIDA PARENTESISA ID PARENTESISB ';'        {salidaMatriz($3,iniNodeMatriz);}
+        | line MSALIDA PARENTESISA ID PARENTESISB ';'   {salidaMatriz($4,iniNodeMatriz);}
+        | BSALIDA PARENTESISA ID PARENTESISB ';'        {salidaMatrizProf($3);}
+        | line BSALIDA PARENTESISA ID PARENTESISB ';'   {salidaMatrizProf($4);}
         ;
 
 expr    : term                                          {$$ = $1;}
+        | '-' term                                       {$$ = -$2;}
         | expr '+' expr                                 {$$ = $1 + $3;}
         | expr '-' expr                                 {$$ = $1 - $3;}
         | expr '/' expr                                 {$$ = $1 / $3;}
@@ -217,12 +224,12 @@ matriz  : CORCHETEA vector CORCHETEB			        {$$ = crearFila(0, $2);}
         | matriz CORCHETEA vector CORCHETEB             {$$ = agregarFila($1, $3);}
         ;
 
-vectorN : OR vector OR                    {$$ = crearNodoVector(0, $2);}
-        | vectorN OR vector OR            {$$ = agregarNodoVector($1, $3);}
+vectorN : OR vector OR                                  {$$ = crearNodoVector(0, $2);}
+        | vectorN OR vector OR                          {$$ = agregarNodoVector($1, $3);}
         ;
 
-bloque  : PARENTESISA vectorN PARENTESISB                               {printf("crear ");$$ = crearMatrizProf(0, $2);}
-        | bloque PARENTESISA vectorN PARENTESISB                        {printf("agragra ");$$ = agregarProf($1, $3);}
+bloque  : PARENTESISA vectorN PARENTESISB               {$$ = crearMatrizProf(0, $2);}
+        | bloque PARENTESISA vectorN PARENTESISB        {$$ = agregarProf($1, $3);}
         ;
 
 /*  j :={
@@ -471,7 +478,7 @@ MatrizProf* agregarProf(MatrizProf* matrizProfOriginal, NodoVector* nextNodoVect
     int num = matrizProfOriginal->num;
     MatrizProf* nuevaMatrizProf = crearMatrizProf(num+1, nextNodoVect);
     matrizProfOriginal->nextMatrizProf = nuevaMatrizProf;
-    return nuevaMatrizProf;
+    return matrizProfOriginal;
 }
 
 MatrizProfIni* crearMatrizProfIni(char* nombre, MatrizProf* matrizProf){
@@ -518,8 +525,47 @@ char* nombrarMatrizProf(char* name, MatrizProf* prof, MatrizProfIni* nodoIni){
     }
 }
 
-void salidaMatrizProf(){
+void salidaMatrizProf(char* nombre){
+    MatrizProfIni* aux = iniMatrizProf;
+    while(aux->next != NULL){
+        if(strcmp(aux->nombre, nombre) == 0){
+            break;
+        }
+        aux = aux->next;
+    }
+    if(strcmp(aux->nombre, nombre) != 0){
+        printf("No matrixProf found");
+        return;
+    } else{
+        MatrizProf* prof = aux->matrizProfeleme;
+        printf(" Matriz de Datos %s :\n", nombre);
+        printf("[\n");
+        while(prof != NULL){
+            printf("(");
+            salidaNodoVector(prof->nextEleNodoVect);
+            prof = prof->nextMatrizProf;
+            printf(")\n");
+        }
+        printf("]\n");
+    }
+}
+
+void salidaNodoVector(NodoVector* nodoVector){
     
+    while(nodoVector != NULL){
+        printf(" |");
+        salidaVectorEle(nodoVector->nextEleVector);
+        nodoVector=nodoVector->nextNodoVector;
+        printf("| ");
+    }
+    
+}
+
+void salidaVectorEle(VectorEle* vector){
+    while(vector != NULL){
+        printf(" %f ",vector->num);
+        vector= vector->next;
+    }
 }
 
 // Nodos Vectores / Matriz n_ij
@@ -533,14 +579,15 @@ NodoVector* crearNodoVector(int numero, VectorEle* nextEVector){
 }
 
 NodoVector* agregarNodoVector(NodoVector* nodoVectorOriginal, VectorEle* nextEVector){
-    NodoVector* vectorOriginal = nodoVectorOriginal;
-    while(nodoVectorOriginal->nextNodoVector != NULL){
-        nodoVectorOriginal = nodoVectorOriginal->nextNodoVector;
+    NodoVector* vectorOriginal=nodoVectorOriginal;
+    //vectorOriginal = (NodoVector*)malloc(sizeof(vectorOriginal));
+    while(vectorOriginal->nextNodoVector != NULL){
+        vectorOriginal = vectorOriginal->nextNodoVector;
     }
-    int num = nodoVectorOriginal->num;
+    int num = vectorOriginal->num;
     NodoVector* nuevoNodoVector = crearNodoVector(num+1, nextEVector);
-    nodoVectorOriginal->nextNodoVector = nuevoNodoVector;
-    return nuevoNodoVector;
+    vectorOriginal->nextNodoVector = nuevoNodoVector;
+    return nodoVectorOriginal;
 }
 
 
