@@ -42,6 +42,9 @@ operacion       \+|\-|\*|\/|\^|@|;|,
 "getRoot"           {return GETROOT;}
 "getExp"            {return GETEXP;}
 "getLog"            {return GETLOG;}
+"ndotdot"           {return NPP;}
+"nidot"             {return NIP;}
+"ndotj"             {return NPJ;}
 {mientras}			{return MIENTRAS;}
 {condicion}			{return CONDICION;}
 {asignacion}        {return ASIGNACION;}

@@ -98,6 +98,12 @@ NodoVector* agregarNodoVector(NodoVector* nodoVectorOriginal, VectorEle* nextEVe
 void salidaVectorEle(VectorEle* vector);
 void salidaNodoVector(NodoVector* nodoVector);
 void salidaMatrizProf(char* nombre);
+int contadorVectorEle(VectorEle* vector);
+int contadorMatrizProf(NodoVector* bloque);
+MatrizProf* buscadorModeloDatos(char* nombre);
+int nidot(int numero, char* nombre);
+int ndotj(int numero, char* nombre);
+int ndotdot(char* nombre);
 
 // Inicializacion atributos
 Number* iniNode = NULL;
@@ -145,6 +151,9 @@ MatrizProfIni* iniMatrizProf = NULL;
 %token PB
 %token OR
 %token BSALIDA
+%token NPP
+%token NPJ
+%token NIP
 
 %token<str> ID   
 %token<numberI> NUMERO_ENTERO
@@ -218,6 +227,9 @@ functs  : SEC PARENTESISA expr PARENTESISB              {$$ = sec($3);}
         | GETROOT PARENTESISA expr  expr PARENTESISB    {$$ = getRoot($3,$4);}
         | GETEXP PARENTESISA expr  expr PARENTESISB     {$$ = getExp($3,$4);}
         | GETLOG PARENTESISA expr  expr PARENTESISB     {$$ = getLog($3,$4);}
+        | NPP PARENTESISA ID PARENTESISB                {$$ = ndotdot($3);}
+        | NPJ PARENTESISA expr ID PARENTESISB           {$$ = ndotj($3,$4);}
+        | NIP PARENTESISA expr ID PARENTESISB           {$$ = nidot($3,$4);}
         ;
 	
 matriz  : CORCHETEA vector CORCHETEB			        {$$ = crearFila(0, $2);}
@@ -228,15 +240,9 @@ vectorN : OR vector OR                                  {$$ = crearNodoVector(0,
         | vectorN OR vector OR                          {$$ = agregarNodoVector($1, $3);}
         ;
 
-bloque  : PARENTESISA vectorN PARENTESISB               {$$ = crearMatrizProf(0, $2);}
-        | bloque PARENTESISA vectorN PARENTESISB        {$$ = agregarProf($1, $3);}
+bloque  : PARENTESISA vectorN PARENTESISB               {$$ = crearMatrizProf(0, $2);printf("contador: %d ", contadorMatrizProf($2));}
+        | bloque PARENTESISA vectorN PARENTESISB        {$$ = agregarProf($1, $3);printf("contador: %d ", contadorMatrizProf($3));}
         ;
-
-/*  j :={
-            ([2 3 4 4] [1 2] [4 -1 12 5])
-            ([22] [4 3 -0.5] [2.2 -5.6])
-        };
-*/
 
 %%
 
@@ -626,6 +632,93 @@ float getLog(float base, float argumento) {
 }
 
 /* Funciones Estadísticas */
+
+//Total de datos del modelo de dos vías de clasificación.
+
+int contadorVectorEle(VectorEle* vector) {  //Contador de vector de datos
+    int sum = 0;
+    while(vector != NULL){
+        sum++;
+        vector=vector->next;
+    }
+    return sum;
+}
+
+int contadorMatrizProf(NodoVector* bloque){       //Contador por bloque N_(i,.)
+    int sum = 0;
+    while(bloque != NULL){
+        sum += contadorVectorEle(bloque->nextEleVector);
+        bloque = bloque->nextNodoVector;
+    }
+    return sum;
+}
+
+MatrizProf* buscadorModeloDatos(char* nombre){
+    MatrizProfIni* inicio = iniMatrizProf;
+    while(inicio->next != NULL){
+        if(strcmp(inicio->nombre, nombre) == 0){
+            break;
+        }
+        inicio=inicio->next;
+    }
+    if(strcmp(inicio->nombre, nombre) != 0){
+        printf("Upps... No se encontró el Modelo. Verifica el nombre");
+        return NULL;
+    } else{
+        return inicio->matrizProfeleme;
+    }
+
+}
+
+int ndotdot(char* nombre){    //N_(.,.) Total de datos del modelo de dos vías de clasificación.
+    MatrizProf* modelo = buscadorModeloDatos(nombre);
+    int sum = 0;
+    while(modelo != NULL){
+        sum += contadorMatrizProf(modelo->nextEleNodoVect);
+        modelo= modelo->nextMatrizProf;
+    }
+    return sum;
+}
+
+int contadorTratamiento(int numero, NodoVector* bloque){       
+    int j = 1;
+    int sum = 0;
+    while(bloque != NULL){
+        if(j==numero){
+            sum += contadorVectorEle(bloque->nextEleVector);
+        }
+        j++;
+        bloque = bloque->nextNodoVector;
+    }
+    return sum;
+}
+
+int nidot(int numero, char* nombre){    //Contador por bloque N_(i,.)
+    MatrizProf* modelo = buscadorModeloDatos(nombre);
+    int i = 1;
+    int sum = 0;
+    while(modelo != NULL){
+        if(i == numero){
+            sum += contadorMatrizProf(modelo->nextEleNodoVect);
+            break;
+        }
+        i++;
+        modelo = modelo->nextMatrizProf;
+    }
+    return sum;
+}
+
+int ndotj(int numero, char* nombre){    //Contador por tratamiento N_(.,j)
+    MatrizProf* modelo = buscadorModeloDatos(nombre);
+    int sum = 0;
+    while(modelo != NULL){
+        sum += contadorTratamiento(numero, modelo->nextEleNodoVect);
+        modelo= modelo->nextMatrizProf;
+    }
+    return sum;
+}
+
+//
 
 /* Fin Funciones Incluidas*/
 

@@ -66,10 +66,13 @@
      PB = 282,
      OR = 283,
      BSALIDA = 284,
-     ID = 285,
-     NUMERO_ENTERO = 286,
-     NUMERO_FLOTANTE = 287,
-     LOGICA = 288
+     NPP = 285,
+     NPJ = 286,
+     NIP = 287,
+     ID = 288,
+     NUMERO_ENTERO = 289,
+     NUMERO_FLOTANTE = 290,
+     LOGICA = 291
    };
 #endif
 /* Tokens.  */
@@ -100,10 +103,13 @@
 #define PB 282
 #define OR 283
 #define BSALIDA 284
-#define ID 285
-#define NUMERO_ENTERO 286
-#define NUMERO_FLOTANTE 287
-#define LOGICA 288
+#define NPP 285
+#define NPJ 286
+#define NIP 287
+#define ID 288
+#define NUMERO_ENTERO 289
+#define NUMERO_FLOTANTE 290
+#define LOGICA 291
 
 
 
@@ -113,7 +119,7 @@ typedef union YYSTYPE
 {
 
 /* Line 1676 of yacc.c  */
-#line 110 "Rachas.y"
+#line 116 "Rachas.y"
 
     char* str;
     int numberI;
@@ -126,7 +132,7 @@ typedef union YYSTYPE
 
 
 /* Line 1676 of yacc.c  */
-#line 130 "y.tab.h"
+#line 136 "y.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
