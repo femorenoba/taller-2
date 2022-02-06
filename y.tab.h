@@ -69,10 +69,16 @@
      NPP = 285,
      NPJ = 286,
      NIP = 287,
-     ID = 288,
-     NUMERO_ENTERO = 289,
-     NUMERO_FLOTANTE = 290,
-     LOGICA = 291
+     UNIONBLOQUE = 288,
+     UNIONMODELO = 289,
+     UNIONTRATAMIENTO = 290,
+     CONCATENACIONVECTORES = 291,
+     CONCATENADORB = 292,
+     BUSCARVECTOR = 293,
+     ID = 294,
+     NUMERO_ENTERO = 295,
+     NUMERO_FLOTANTE = 296,
+     LOGICA = 297
    };
 #endif
 /* Tokens.  */
@@ -106,10 +112,16 @@
 #define NPP 285
 #define NPJ 286
 #define NIP 287
-#define ID 288
-#define NUMERO_ENTERO 289
-#define NUMERO_FLOTANTE 290
-#define LOGICA 291
+#define UNIONBLOQUE 288
+#define UNIONMODELO 289
+#define UNIONTRATAMIENTO 290
+#define CONCATENACIONVECTORES 291
+#define CONCATENADORB 292
+#define BUSCARVECTOR 293
+#define ID 294
+#define NUMERO_ENTERO 295
+#define NUMERO_FLOTANTE 296
+#define LOGICA 297
 
 
 
@@ -119,7 +131,7 @@ typedef union YYSTYPE
 {
 
 /* Line 1676 of yacc.c  */
-#line 116 "Rachas.y"
+#line 125 "Rachas.y"
 
     char* str;
     int numberI;
@@ -132,7 +144,7 @@ typedef union YYSTYPE
 
 
 /* Line 1676 of yacc.c  */
-#line 136 "y.tab.h"
+#line 148 "y.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

@@ -104,12 +104,14 @@ MatrizProf* buscadorModeloDatos(char* nombre);
 int nidot(int numero, char* nombre);
 int ndotj(int numero, char* nombre);
 int ndotdot(char* nombre);
-VectorEle* concatenacionVectores(VectorEle* vector1, VectorEle* vector2);
-VectorEle* UnionTratamiento(int numero, NodoVector* bloque);
-VectorEle* concatenadorB(VectorEle* vector1, NodoVector* bloque);
-VectorEle* UnionBloque(int numero, char* nombre);
-VectorEle* UnionTratamiento (int numero, char* nombre);
+VectorEle* concatenacionVectores(char* vector1, char* vector2,VectorIni* head);
+VectorEle* UnionTratamiento(int numero, char* nombre);
+//VectorEle* concatenadorB( NodoVector* bloque);
+//VectorEle* UnionBloque(int numero, char* nombre);
+//VectorEle* UnionModelo (int numero, char* nombre);
 VectorEle* buscarVector(char* nombre, VectorIni* head);
+VectorEle* concatenacionVectoresD(VectorEle* vector1, VectorEle* vector2);
+
 
 
 // Inicializacion atributos
@@ -164,7 +166,6 @@ MatrizProfIni* iniMatrizProf = NULL;
 %token UNIONBLOQUE
 %token UNIONMODELO
 %token UNIONTRATAMIENTO
-%token UNIONBLOQUE
 %token CONCATENACIONVECTORES
 %token CONCATENADORB
 %token BUSCARVECTOR
@@ -222,13 +223,15 @@ term    : NUMERO_ENTERO                                 {$<numberF>$ = (float)$1
         | ID                                            {$$ = getNumber(iniNode,$1);}
         ; 
 
-indent  : ID ASIGNACION expr                            {agregarNumero(iniNode,$1,$3);}
+indent  : ID ASIGNACION expr                            {agregarNumero(iniNode,$1,$3);}        
         | ID ASIGNACION CORCHETEA vector CORCHETEB      {nombrarVector(iniNodeVector, $1, $4);}
 	    | ID ASIGNACION LLAVESA matriz LLAVESB          {nombrarMatriz($1, $4, iniNodeMatriz);}
         | ID ASIGNACION LLAVESA bloque LLAVESB          {nombrarMatrizProf($1, $4, iniMatrizProf);}
         ;
 
-vector  : term                                          {$$ = crearVectorEle($1);}
+vector  : CONCATENACIONVECTORES PARENTESISA ID ID PARENTESISB           {$$ = concatenacionVectores($3,$4, iniNodeVector);}
+        | UNIONTRATAMIENTO PARENTESISA expr ID PARENTESISB           {$$ = UnionTratamiento($3,$4);}
+        | term                                          {$$ = crearVectorEle($1);}
         | vector term                                   {$$ = agregarVectorEle($1,crearVectorEle($2));}
         ;
 
@@ -243,13 +246,11 @@ functs  : SEC PARENTESISA expr PARENTESISB              {$$ = sec($3);}
         | GETLOG PARENTESISA expr  expr PARENTESISB     {$$ = getLog($3,$4);}
         | NPP PARENTESISA ID PARENTESISB                {$$ = ndotdot($3);}
         | NPJ PARENTESISA expr ID PARENTESISB           {$$ = ndotj($3,$4);}
-        | NIP PARENTESISA expr ID PARENTESISB           {$$ = nidot($3,$4);}
-        | CONCATENACIONVECTORES PARENTESISA ID ID PARENTESISB           {$$ = concatenacionVectores($3,$4);}
-        | CONCATENADORB PARENTESISA ID ID PARENTESISB           {$$ = concatenadorB($3,$4);}
-        | UNIONTRATAMIENTO PARENTESISA ID ID PARENTESISB           {$$ = UnionTratamiento($3,$4);}
-        | UNIONBLOQUE PARENTESISA ID ID PARENTESISB           {$$ = UnionBloque($3,$4);}
-        | UNIONMODELO PARENTESISA ID ID PARENTESISB           {$$ = UnionModelo($3,$4);}
-        | BUSCARVECTOR PARENTESISA ID ID PARENTESISB           {$$ = buscarVector($3,$4);}
+        | NIP PARENTESISA expr ID PARENTESISB           {$$ = nidot($3,$4);}       
+//| CONCATENADORB PARENTESISA ID PARENTESISB           {concatenadorB($3);}    
+   //     | UNIONBLOQUE PARENTESISA ID ID PARENTESISB           {UnionBloque($3,$4,);}
+  //      | UNIONMODELO PARENTESISA ID ID PARENTESISB           {UnionModelo($3,$4);}
+      //  | BUSCARVECTOR PARENTESISA ID ID PARENTESISB           {buscarVector($3,$4);}
         ;
 	
 matriz  : CORCHETEA vector CORCHETEB			        {$$ = crearFila(0, $2);}
@@ -738,7 +739,7 @@ int ndotj(int numero, char* nombre){    //Contador por tratamiento N_(.,j)
     return sum;
 }
 
-vectorEle* buscarVector(char* nombre, VectorIni* head){
+VectorEle* buscarVector(char* nombre, VectorIni* head){
     while(head->next != NULL){
         if(strcmp(head->nombre, nombre) == 0){
             break;
@@ -754,70 +755,64 @@ vectorEle* buscarVector(char* nombre, VectorIni* head){
 }
 
 // uniones
-VectorEle* concatenacionVectores(VectorEle* vector1, VectorEle* vector2) { 
-    VectorEle* resultado;
-    while(vector1 != NULL){
-        agregarVectorEle(resultado,vector1);
-        vector1=vector1->next;
-        resultado=resultado->next;
-    }
-     while(vector2 != NULL){
-        agregarVectorEle(resultado,vector2)
-        vector2=vector2->next;
-        resultado=resultado->next;
+VectorEle* concatenacionVectores(char* vector1, char* vector2, VectorIni* head) { 
+     VectorEle* bvector1= buscarVector(vector1,head);
+     VectorEle* bvector2= buscarVector(vector2,head);
+     VectorEle* resultado= crearVectorEle(bvector1->num);
+    
+    bvector1=bvector1->next;
+    while(bvector1 != NULL){
+
+        agregarVectorEle(resultado,crearVectorEle(bvector1->num));
+        bvector1=bvector1->next;
+         }
+
+     while(bvector2 != NULL){
+        agregarVectorEle(resultado,crearVectorEle(bvector2->num));
+        bvector2=bvector2->next;
+        
 
     }
     return resultado;
 }
-VectorEle* UnionTratamiento(int numero, NodoVector* bloque){       
+VectorEle* concatenacionVectoresD(VectorEle* vector1, VectorEle* vector2) { 
+     VectorEle* resultado= crearVectorEle(vector1->num);
+    
+    vector1=vector1->next;
+    while(vector1 != NULL){
+
+        agregarVectorEle(resultado,crearVectorEle(vector1->num));
+        vector1=vector1->next;
+         }
+
+     while(vector2 != NULL){
+        agregarVectorEle(resultado,crearVectorEle(vector2->num));
+        vector2=vector2->next;
+        
+
+    }
+    return resultado;
+}
+
+
+VectorEle* UnionTratamiento(int numero,char* nombre){       
     int j = 1;
+    MatrizProf* modelo = buscadorModeloDatos(nombre);
     VectorEle* resultado;
+    printf("%d", 2);
 
-
-    while(bloque != NULL){
+   
+    while(modelo != NULL){
         if(j==numero){
-           resultado= concatenacionVectores(resultado,bloque->nextEleVector);
+           resultado= concatenacionVectoresD(resultado,modelo->nextEleNodoVect->nextEleVector);
         }
         j++;
-        bloque = bloque->nextNodoVector;
-    }
-    return resultado;
-}
-
-
-VectorEle* concatenadorB(VectorEle* vector1, NodoVector* bloque){       //Contador por bloque N_(i,.)
-    VectorEle* resultado;
-    while(bloque != NULL){
-        resultado= concatenacionVectores(resultado,bloque->nextEleVector);
-        bloque = bloque->nextNodoVector;
-    }
-    return resultado;
-}
-
-VectorEle* UnionBloque(int numero, char* nombre){    //Contador por bloque N_(i,.)
-    MatrizProf* modelo = buscadorModeloDatos(nombre);
-    int i = 1;
-    VectorEle* resultado;
-    while(modelo != NULL){
-        if(i == numero){
-            resultado = concatenadorB(resultado,modelo->nextEleNodoVect);
-            break;
-        }
-        i++;
         modelo = modelo->nextMatrizProf;
+        printf("%d", 1);
     }
     return resultado;
 }
 
-VectorEle* UnionModelo(char* nombre){    //N_(.,.) Total de datos del modelo de dos vías de clasificación.
-    MatrizProf* modelo = buscadorModeloDatos(nombre);
-    VectorEle* resultado;
-    while(modelo != NULL){
-        resultado = concatenadorB(modelo->nextEleNodoVect);
-        modelo= modelo->nextMatrizProf;
-    }
-    return resultado;
-}
 
 //
 
