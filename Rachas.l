@@ -50,6 +50,7 @@ operacion       \+|\-|\*|\/|\^|@|;|,
 "UnionTratamiento"             {return UNIONTRATAMIENTO;}
 "UnionBloque"             {return UNIONBLOQUE;}
 "UnionModelo"             {return UNIONMODELO;}
+"buscarVector"             {return BUSCARVECTOR;}
 
 {mientras}			{return MIENTRAS;}
 {condicion}			{return CONDICION;}

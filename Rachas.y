@@ -109,6 +109,7 @@ VectorEle* UnionTratamiento(int numero, NodoVector* bloque);
 VectorEle* concatenadorB(VectorEle* vector1, NodoVector* bloque);
 VectorEle* UnionBloque(int numero, char* nombre);
 VectorEle* UnionTratamiento (int numero, char* nombre);
+VectorEle* buscarVector(char* nombre, VectorIni* head);
 
 
 // Inicializacion atributos
@@ -166,6 +167,7 @@ MatrizProfIni* iniMatrizProf = NULL;
 %token UNIONBLOQUE
 %token CONCATENACIONVECTORES
 %token CONCATENADORB
+%token BUSCARVECTOR
 
 %token<str> ID   
 %token<numberI> NUMERO_ENTERO
@@ -242,11 +244,12 @@ functs  : SEC PARENTESISA expr PARENTESISB              {$$ = sec($3);}
         | NPP PARENTESISA ID PARENTESISB                {$$ = ndotdot($3);}
         | NPJ PARENTESISA expr ID PARENTESISB           {$$ = ndotj($3,$4);}
         | NIP PARENTESISA expr ID PARENTESISB           {$$ = nidot($3,$4);}
-        | CONCATENACIONVECTORES PARENTESISA expr ID PARENTESISB           {$$ = concatenacionVectores($3,$4);}
-        | CONCATENADORB PARENTESISA expr ID PARENTESISB           {$$ = concatenadorB($3,$4);}
-        | UNIONTRATAMIENTO PARENTESISA expr ID PARENTESISB           {$$ = UnionTratamiento($3,$4);}
-        | UNIONBLOQUE PARENTESISA expr ID PARENTESISB           {$$ = UnionBloque($3,$4);}
-        | UNIONMODELO PARENTESISA expr ID PARENTESISB           {$$ = UnionModelo($3,$4);}
+        | CONCATENACIONVECTORES PARENTESISA ID ID PARENTESISB           {$$ = concatenacionVectores($3,$4);}
+        | CONCATENADORB PARENTESISA ID ID PARENTESISB           {$$ = concatenadorB($3,$4);}
+        | UNIONTRATAMIENTO PARENTESISA ID ID PARENTESISB           {$$ = UnionTratamiento($3,$4);}
+        | UNIONBLOQUE PARENTESISA ID ID PARENTESISB           {$$ = UnionBloque($3,$4);}
+        | UNIONMODELO PARENTESISA ID ID PARENTESISB           {$$ = UnionModelo($3,$4);}
+        | BUSCARVECTOR PARENTESISA ID ID PARENTESISB           {$$ = buscarVector($3,$4);}
         ;
 	
 matriz  : CORCHETEA vector CORCHETEB			        {$$ = crearFila(0, $2);}
@@ -734,6 +737,22 @@ int ndotj(int numero, char* nombre){    //Contador por tratamiento N_(.,j)
     }
     return sum;
 }
+
+vectorEle* buscarVector(char* nombre, VectorIni* head){
+    while(head->next != NULL){
+        if(strcmp(head->nombre, nombre) == 0){
+            break;
+        }
+        head = head->next;
+    }
+    if(strcmp(head->nombre, nombre) != 0){
+        printf("Vector not found\n");
+        return NULL;
+    }else{
+        return head->nextEle;
+    }
+}
+
 // uniones
 VectorEle* concatenacionVectores(VectorEle* vector1, VectorEle* vector2) { 
     VectorEle* resultado;
@@ -774,6 +793,7 @@ VectorEle* concatenadorB(VectorEle* vector1, NodoVector* bloque){       //Contad
     }
     return resultado;
 }
+
 VectorEle* UnionBloque(int numero, char* nombre){    //Contador por bloque N_(i,.)
     MatrizProf* modelo = buscadorModeloDatos(nombre);
     int i = 1;
