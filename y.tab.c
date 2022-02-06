@@ -2801,20 +2801,25 @@ VectorEle* concatenacionVectoresD(VectorEle* vector1, VectorEle* vector2) {
 
 
 VectorEle* UnionTratamiento(int numero,char* nombre){       
-    int j = 1;
     MatrizProf* modelo = buscadorModeloDatos(nombre);
-    VectorEle* resultado;
-    printf("%d", 2);
-
-   
-    while(modelo != NULL){
+    VectorEle* resultado= crearVectorEle(modelo->nextEleNodoVect->nextEleVector->num);  
+   // modelo->nextEleNodoVect->nextEleVector = modelo->nextEleNodoVect->nextNodoVector->nextEleVector->next ;  
+    //modelo =  modelo;
+    while(modelo != NULL){  
+       int j = 1;
+       NodoVector* bloque=  modelo->nextEleNodoVect;   
+       while(bloque !=NULL){
         if(j==numero){
-           resultado= concatenacionVectoresD(resultado,modelo->nextEleNodoVect->nextEleVector);
+         resultado= concatenacionVectoresD(resultado,bloque->nextEleVector);                    
         }
         j++;
-        modelo = modelo->nextMatrizProf;
-        printf("%d", 1);
+         bloque=bloque->nextNodoVector;
+
+       }
+     modelo = modelo->nextMatrizProf;
+
     }
+    resultado=resultado->next;
     return resultado;
 }
 
