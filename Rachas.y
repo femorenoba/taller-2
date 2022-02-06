@@ -104,6 +104,12 @@ MatrizProf* buscadorModeloDatos(char* nombre);
 int nidot(int numero, char* nombre);
 int ndotj(int numero, char* nombre);
 int ndotdot(char* nombre);
+VectorEle* concatenacionVectores(VectorEle* vector1, VectorEle* vector2);
+VectorEle* UnionTratamiento(int numero, NodoVector* bloque);
+VectorEle* concatenadorB(VectorEle* vector1, NodoVector* bloque);
+VectorEle* UnionBloque(int numero, char* nombre);
+VectorEle* UnionTratamiento (int numero, char* nombre);
+
 
 // Inicializacion atributos
 Number* iniNode = NULL;
@@ -154,6 +160,12 @@ MatrizProfIni* iniMatrizProf = NULL;
 %token NPP
 %token NPJ
 %token NIP
+%token UNIONBLOQUE
+%token UNIONMODELO
+%token UNIONTRATAMIENTO
+%token UNIONBLOQUE
+%token CONCATENACIONVECTORES
+%token CONCATENADORB
 
 %token<str> ID   
 %token<numberI> NUMERO_ENTERO
@@ -230,6 +242,11 @@ functs  : SEC PARENTESISA expr PARENTESISB              {$$ = sec($3);}
         | NPP PARENTESISA ID PARENTESISB                {$$ = ndotdot($3);}
         | NPJ PARENTESISA expr ID PARENTESISB           {$$ = ndotj($3,$4);}
         | NIP PARENTESISA expr ID PARENTESISB           {$$ = nidot($3,$4);}
+        | CONCATENACIONVECTORES PARENTESISA expr ID PARENTESISB           {$$ = concatenacionVectores($3,$4);}
+        | CONCATENADORB PARENTESISA expr ID PARENTESISB           {$$ = concatenadorB($3,$4);}
+        | UNIONTRATAMIENTO PARENTESISA expr ID PARENTESISB           {$$ = UnionTratamiento($3,$4);}
+        | UNIONBLOQUE PARENTESISA expr ID PARENTESISB           {$$ = UnionBloque($3,$4);}
+        | UNIONMODELO PARENTESISA expr ID PARENTESISB           {$$ = UnionModelo($3,$4);}
         ;
 	
 matriz  : CORCHETEA vector CORCHETEB			        {$$ = crearFila(0, $2);}
@@ -389,7 +406,7 @@ MatrizIni* crearMatrizIni(char* nombre, MatrizFila* fila ){
 }
 
 void imprimirVector(MatrizFila* fila){
-    printf("Vetores que estan entrando\n");
+    printf("Vectores que estan entrando\n");
     while(fila != NULL){
         VectorEle* vect = fila->nextEle;
         printf("[");
@@ -716,6 +733,70 @@ int ndotj(int numero, char* nombre){    //Contador por tratamiento N_(.,j)
         modelo= modelo->nextMatrizProf;
     }
     return sum;
+}
+// uniones
+VectorEle* concatenacionVectores(VectorEle* vector1, VectorEle* vector2) { 
+    VectorEle* resultado;
+    while(vector1 != NULL){
+        agregarVectorEle(resultado,vector1);
+        vector1=vector1->next;
+        resultado=resultado->next;
+    }
+     while(vector2 != NULL){
+        agregarVectorEle(resultado,vector2)
+        vector2=vector2->next;
+        resultado=resultado->next;
+
+    }
+    return resultado;
+}
+VectorEle* UnionTratamiento(int numero, NodoVector* bloque){       
+    int j = 1;
+    VectorEle* resultado;
+
+
+    while(bloque != NULL){
+        if(j==numero){
+           resultado= concatenacionVectores(resultado,bloque->nextEleVector);
+        }
+        j++;
+        bloque = bloque->nextNodoVector;
+    }
+    return resultado;
+}
+
+
+VectorEle* concatenadorB(VectorEle* vector1, NodoVector* bloque){       //Contador por bloque N_(i,.)
+    VectorEle* resultado;
+    while(bloque != NULL){
+        resultado= concatenacionVectores(resultado,bloque->nextEleVector);
+        bloque = bloque->nextNodoVector;
+    }
+    return resultado;
+}
+VectorEle* UnionBloque(int numero, char* nombre){    //Contador por bloque N_(i,.)
+    MatrizProf* modelo = buscadorModeloDatos(nombre);
+    int i = 1;
+    VectorEle* resultado;
+    while(modelo != NULL){
+        if(i == numero){
+            resultado = concatenadorB(resultado,modelo->nextEleNodoVect);
+            break;
+        }
+        i++;
+        modelo = modelo->nextMatrizProf;
+    }
+    return resultado;
+}
+
+VectorEle* UnionModelo(char* nombre){    //N_(.,.) Total de datos del modelo de dos vías de clasificación.
+    MatrizProf* modelo = buscadorModeloDatos(nombre);
+    VectorEle* resultado;
+    while(modelo != NULL){
+        resultado = concatenadorB(modelo->nextEleNodoVect);
+        modelo= modelo->nextMatrizProf;
+    }
+    return resultado;
 }
 
 //

@@ -45,6 +45,12 @@ operacion       \+|\-|\*|\/|\^|@|;|,
 "ndotdot"           {return NPP;}
 "nidot"             {return NIP;}
 "ndotj"             {return NPJ;}
+"concatenacionVectores"             {return CONCATENACIONVECTORES;}
+"concatenadorB"             {return CONCATENADORB;}
+"UnionTratamiento"             {return UNIONTRATAMIENTO;}
+"UnionBloque"             {return UNIONBLOQUE;}
+"UnionModelo"             {return UNIONMODELO;}
+
 {mientras}			{return MIENTRAS;}
 {condicion}			{return CONDICION;}
 {asignacion}        {return ASIGNACION;}
