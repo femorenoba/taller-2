@@ -817,24 +817,7 @@ VectorEle* UnionTratamiento(int numero,char* nombre){
     return resultado;
 }
 
-// Algoritmo Ordenamiento Burbuja
 
-VectorEle* ordenamientoBurbuja (VectorEle* vector){
-    VectorEle* ordenado=vector;
-    while(vector!=NULL){
-        
-    }
-    for(int i=0; i<n; i++){
-        for(int j=0; j<(n-i); j++){
-            if(a[j] > a[j+1]){
-                aux = a[j];
-                a[j] = a[j+1];
-                a[j+1] = aux;
-            }
-        }
-    }
-    return ordenado;
-}
 
 //
 
