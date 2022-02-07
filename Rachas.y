@@ -106,9 +106,8 @@ int ndotj(int numero, char* nombre);
 int ndotdot(char* nombre);
 VectorEle* concatenacionVectores(char* vector1, char* vector2,VectorIni* head);
 VectorEle* UnionTratamiento(int numero, char* nombre);
-//VectorEle* concatenadorB( NodoVector* bloque);
-//VectorEle* UnionBloque(int numero, char* nombre);
-//VectorEle* UnionModelo (int numero, char* nombre);
+VectorEle* UnionBloque(int numero, char* nombre);
+VectorEle* UnionModelo(char* nombre);
 VectorEle* buscarVector(char* nombre, VectorIni* head);
 VectorEle* concatenacionVectoresD(VectorEle* vector1, VectorEle* vector2);
 
@@ -167,7 +166,6 @@ MatrizProfIni* iniMatrizProf = NULL;
 %token UNIONMODELO
 %token UNIONTRATAMIENTO
 %token CONCATENACIONVECTORES
-%token CONCATENADORB
 %token BUSCARVECTOR
 
 %token<str> ID   
@@ -231,6 +229,8 @@ indent  : ID ASIGNACION expr                            {agregarNumero(iniNode,$
 
 vector  : CONCATENACIONVECTORES PARENTESISA ID ID PARENTESISB           {$$ = concatenacionVectores($3,$4, iniNodeVector);}
         | UNIONTRATAMIENTO PARENTESISA expr ID PARENTESISB           {$$ = UnionTratamiento($3,$4);}
+        | UNIONBLOQUE PARENTESISA expr ID PARENTESISB           {$$ = UnionBloque($3,$4);}
+        | UNIONMODELO PARENTESISA ID PARENTESISB           {$$ = UnionModelo($3);}
         | term                                          {$$ = crearVectorEle($1);}
         | vector term                                   {$$ = agregarVectorEle($1,crearVectorEle($2));}
         ;
@@ -248,7 +248,6 @@ functs  : SEC PARENTESISA expr PARENTESISB              {$$ = sec($3);}
         | NPJ PARENTESISA expr ID PARENTESISB           {$$ = ndotj($3,$4);}
         | NIP PARENTESISA expr ID PARENTESISB           {$$ = nidot($3,$4);}       
 //| CONCATENADORB PARENTESISA ID PARENTESISB           {concatenadorB($3);}    
-   //     | UNIONBLOQUE PARENTESISA ID ID PARENTESISB           {UnionBloque($3,$4,);}
   //      | UNIONMODELO PARENTESISA ID ID PARENTESISB           {UnionModelo($3,$4);}
       //  | BUSCARVECTOR PARENTESISA ID ID PARENTESISB           {buscarVector($3,$4);}
         ;
@@ -798,17 +797,46 @@ VectorEle* concatenacionVectoresD(VectorEle* vector1, VectorEle* vector2) {
 VectorEle* UnionTratamiento(int numero,char* nombre){       
     MatrizProf* modelo = buscadorModeloDatos(nombre);
     VectorEle* resultado= crearVectorEle(modelo->nextEleNodoVect->nextEleVector->num);  
-   
+
     while(modelo != NULL){  
-       int j = 1;
        NodoVector* bloque=  modelo->nextEleNodoVect;   
+       int j = 1;
+
        while(bloque !=NULL){
         if(j==numero){
          resultado= concatenacionVectoresD(resultado,bloque->nextEleVector);                    
         }
-        j++;
+        
          bloque=bloque->nextNodoVector;
+        
+        j++;
+       }
+      
+       
+     modelo = modelo->nextMatrizProf;
 
+    }
+    resultado=resultado->next;
+    return resultado;
+}
+VectorEle* UnionBloque(int numero,char* nombre){       
+    MatrizProf* modelo = buscadorModeloDatos(nombre);
+    VectorEle* resultado= crearVectorEle(modelo->nextEleNodoVect->nextEleVector->num);  
+    int j = 1;
+
+    while(modelo != NULL){  
+       NodoVector* bloque=  modelo->nextEleNodoVect;   
+       if (j==numero){
+       while(bloque !=NULL){
+        if(j==numero){
+         resultado= concatenacionVectoresD(resultado,bloque->nextEleVector);                    
+        }
+        
+         bloque=bloque->nextNodoVector;
+        
+
+       }
+       j++;
        }
      modelo = modelo->nextMatrizProf;
 
@@ -822,7 +850,7 @@ VectorEle* UnionTratamiento(int numero,char* nombre){
 VectorEle* ordenamientoBurbuja (VectorEle* vector){
     VectorEle* ordenado=vector;
     while(vector!=NULL){
-        
+
     }
     for(int i=0; i<n; i++){
         for(int j=0; j<(n-i); j++){

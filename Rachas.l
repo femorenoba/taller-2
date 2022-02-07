@@ -47,6 +47,10 @@ operacion       \+|\-|\*|\/|\^|@|;|,
 "ndotj"             {return NPJ;}
 "concatenacionVectores"             {return CONCATENACIONVECTORES;}
 "UnionTratamiento"             {return UNIONTRATAMIENTO;}
+"UnionBloque"             {return UNIONBLOQUE;}
+"UnionModelo"             {return UNIONMODELO;}
+
+
 
 
 
