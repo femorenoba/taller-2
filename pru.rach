@@ -25,7 +25,11 @@ j := {(|1 5 1 2| |1| |0 1 12 5|)
      (|2 3 4 3| |2| |2.5 1 5|)
     };
 vector4 := [UnionTratamiento(1 j)];
+vector6 := [UnionBloque(1 j)];
+vector5 := [UnionModelo(j)];
 vsalida(vector4);
+vsalida(vector6);
+vsalida(vector5);
 $bsalida(j);
 $salida(-2.4 - getRoot(2 4));
 con := nidot(1 j);
