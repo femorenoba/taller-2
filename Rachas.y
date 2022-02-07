@@ -873,20 +873,17 @@ VectorEle* ordenamientoBurbuja (VectorEle* vector){
     VectorEle* ordenado=vector;
     VectorEle* a = vector;
     while(vector!=NULL){
-        while(vector->next->next != NULL){
-            
+        while(ordenado->next->next != NULL){
+            VectorEle* a = vector;
+            if(ordenado->num > ordenado->next->num){
+                a = ordenado;
+                ordenado = ordenado->next;
+                ordenado->next = a;
+            }
+            ordenado=ordenado->next;
         }
-        a = a->next;
+        ordenado = ordenado->next;
     }
-    //for(int i=0; i<n; i++){
-        //for(int j=0; j<(n-i); j++){
-            //if(a[j] > a[j+1]){
-                //aux = a[j];
-                //a[j] = a[j+1];
-                //a[j+1] = aux;
-            //}
-        //}
-    //}
     return ordenado;
 }
 
