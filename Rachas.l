@@ -26,30 +26,30 @@ matriz          "matriz"
 operacion       \+|\-|\*|\/|\^|@|;|,
 
 %%
-{finLinea}          {}
-{comentario}		{}
-{espacio}			{}
-"vsalida"           {return VSALIDA;}
-"msalida"           {return MSALIDA;}
-"salida"            {return SALIDA;}
-"bsalida"           {return BSALIDA;}
-"sin"               {return SIN;}
-"cos"               {return COS;}
-"tan"               {return TAN;}
-"cot"               {return COT;}
-"sec"               {return SEC;}
-"csc"               {return CSC;}
-"getRoot"           {return GETROOT;}
-"getExp"            {return GETEXP;}
-"getLog"            {return GETLOG;}
-"ndotdot"           {return NPP;}
-"nidot"             {return NIP;}
-"ndotj"             {return NPJ;}
-"concatenacionVectores"             {return CONCATENACIONVECTORES;}
-"UnionTratamiento"             {return UNIONTRATAMIENTO;}
-"UnionBloque"             {return UNIONBLOQUE;}
-"UnionModelo"             {return UNIONMODELO;}
-"ordenamientoBurbuja" {return ORB;}
+{finLinea}                  {}
+{comentario}		        {}
+{espacio}			        {}
+"vsalida"                   {return VSALIDA;}
+"msalida"                   {return MSALIDA;}
+"salida"                    {return SALIDA;}
+"bsalida"                   {return BSALIDA;}
+"sin"                       {return SIN;}
+"cos"                       {return COS;}
+"tan"                       {return TAN;}
+"cot"                       {return COT;}
+"sec"                       {return SEC;}
+"csc"                       {return CSC;}
+"getRoot"                   {return GETROOT;}
+"getExp"                    {return GETEXP;}
+"getLog"                    {return GETLOG;}
+"ndotdot"                   {return NPP;}
+"nidot"                     {return NIP;}
+"ndotj"                     {return NPJ;}
+"concatenacionVectores"     {return CONCATENACIONVECTORES;}
+"UnionTratamiento"          {return UNIONTRATAMIENTO;}
+"UnionBloque"               {return UNIONBLOQUE;}
+"UnionModelo"               {return UNIONMODELO;}
+"ordenamientoBurbuja"       {return ORB;}
 
 
 

@@ -38,7 +38,7 @@ prue := [3 1 2 4 6 5];
 vsalida(prue);
 axx := [ordenamientoBurbuja(prue)];
 vsalida(prue);
-q := [14 1432 2 1];
+q := [14 1432 -2 1];
 vsalida(axx);
 w := [ordenamientoBurbuja(q)];
 vsalida(w);

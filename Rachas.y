@@ -209,7 +209,6 @@ line    : line ';'                                      {;}
         ;
 
 expr    : term                                          {$$ = $1;}
-        | '-' term                                       {$$ = -$2;}
         | expr '+' expr                                 {$$ = $1 + $3;}
         | expr '-' expr                                 {$$ = $1 - $3;}
         | expr '/' expr                                 {$$ = $1 / $3;}
@@ -219,6 +218,7 @@ expr    : term                                          {$$ = $1;}
 
 term    : NUMERO_ENTERO                                 {$<numberF>$ = (float)$1;}
         | NUMERO_FLOTANTE                               {$$ = $1;}
+        | '-' term                                      {$$ = -$2;}
         | ID                                            {$$ = getNumber(iniNode,$1);}
         ; 
 
@@ -228,13 +228,13 @@ indent  : ID ASIGNACION expr                            {agregarNumero(iniNode,$
         | ID ASIGNACION LLAVESA bloque LLAVESB          {nombrarMatrizProf($1, $4, iniMatrizProf);}
         ;
 
-vector  : CONCATENACIONVECTORES PARENTESISA ID ID PARENTESISB           {$$ = concatenacionVectores($3,$4, iniNodeVector);}
-        | UNIONTRATAMIENTO PARENTESISA expr ID PARENTESISB           {$$ = UnionTratamiento($3,$4);}
+vector  : CONCATENACIONVECTORES PARENTESISA ID ID PARENTESISB   {$$ = concatenacionVectores($3,$4, iniNodeVector);}
+        | UNIONTRATAMIENTO PARENTESISA expr ID PARENTESISB      {$$ = UnionTratamiento($3,$4);}
         | UNIONBLOQUE PARENTESISA expr ID PARENTESISB           {$$ = UnionBloque($3,$4);}
-        | UNIONMODELO PARENTESISA ID PARENTESISB           {$$ = UnionModelo($3);}
-        | ORB PARENTESISA ID PARENTESISB                {$$ = ordenamientoBurbuja($3);}
-        | term                                          {$$ = crearVectorEle($1);}
-        | vector term                                   {$$ = agregarVectorEle($1,crearVectorEle($2));}
+        | UNIONMODELO PARENTESISA ID PARENTESISB                {$$ = UnionModelo($3);}
+        | ORB PARENTESISA ID PARENTESISB                        {$$ = ordenamientoBurbuja($3);}
+        | term                                                  {$$ = crearVectorEle($1);}
+        | vector term                                           {$$ = agregarVectorEle($1,crearVectorEle($2));}
         ;
 
 functs  : SEC PARENTESISA expr PARENTESISB              {$$ = sec($3);}
@@ -249,9 +249,6 @@ functs  : SEC PARENTESISA expr PARENTESISB              {$$ = sec($3);}
         | NPP PARENTESISA ID PARENTESISB                {$$ = ndotdot($3);}
         | NPJ PARENTESISA expr ID PARENTESISB           {$$ = ndotj($3,$4);}
         | NIP PARENTESISA expr ID PARENTESISB           {$$ = nidot($3,$4);}       
-//| CONCATENADORB PARENTESISA ID PARENTESISB           {concatenadorB($3);}    
-  //      | UNIONMODELO PARENTESISA ID ID PARENTESISB           {UnionModelo($3,$4);}
-      //  | BUSCARVECTOR PARENTESISA ID ID PARENTESISB           {buscarVector($3,$4);}
         ;
 	
 matriz  : CORCHETEA vector CORCHETEB			        {$$ = crearFila(0, $2);}
@@ -268,10 +265,9 @@ bloque  : PARENTESISA vectorN PARENTESISB               {$$ = crearMatrizProf(0,
 
 %%
 
-///////////////////Estructuras
+/*Declaración de Estructuras de Datos*/
 
-
-// Se supone que crea un nuevo numero
+// Crea un nuevo numero
 Number* crearNumero(char* nombre, float valor){
     Number* number;
     number = (Number*)malloc(sizeof(Number));
@@ -618,8 +614,6 @@ NodoVector* agregarNodoVector(NodoVector* nodoVectorOriginal, VectorEle* nextEVe
     return nodoVectorOriginal;
 }
 
-
-
 /* Fin Estructuras */
 
 
@@ -755,122 +749,94 @@ VectorEle* buscarVector(char* nombre, VectorIni* head){
     }
 }
 
-// uniones
+// Uniones
 VectorEle* concatenacionVectores(char* vector1, char* vector2, VectorIni* head) { 
-     VectorEle* bvector1= buscarVector(vector1,head);
-     VectorEle* bvector2= buscarVector(vector2,head);
-     VectorEle* resultado= crearVectorEle(bvector1->num);
-    
+    VectorEle* bvector1= buscarVector(vector1,head);
+    VectorEle* bvector2= buscarVector(vector2,head);
+    VectorEle* resultado= crearVectorEle(bvector1->num);
     bvector1=bvector1->next;
     while(bvector1 != NULL){
-
         agregarVectorEle(resultado,crearVectorEle(bvector1->num));
         bvector1=bvector1->next;
-         }
-
-     while(bvector2 != NULL){
+    }
+    while(bvector2 != NULL){
         agregarVectorEle(resultado,crearVectorEle(bvector2->num));
         bvector2=bvector2->next;
-        
-
     }
     return resultado;
 }
+
 VectorEle* concatenacionVectoresD(VectorEle* vector1, VectorEle* vector2) { 
-     VectorEle* resultado= crearVectorEle(vector1->num);
-    
+    VectorEle* resultado= crearVectorEle(vector1->num);
     vector1=vector1->next;
     while(vector1 != NULL){
-
         agregarVectorEle(resultado,crearVectorEle(vector1->num));
         vector1=vector1->next;
-         }
-
-     while(vector2 != NULL){
+    }
+    while(vector2 != NULL){
         agregarVectorEle(resultado,crearVectorEle(vector2->num));
         vector2=vector2->next;
-        
-
     }
     return resultado;
 }
 
-
-VectorEle* UnionTratamiento(int numero,char* nombre){       
+VectorEle* UnionTratamiento(int numero,char* nombre){           //X_( dot, j )
     MatrizProf* modelo = buscadorModeloDatos(nombre);
     VectorEle* resultado= crearVectorEle(modelo->nextEleNodoVect->nextEleVector->num);  
-
     while(modelo != NULL){  
-       NodoVector* bloque=  modelo->nextEleNodoVect;   
-       int j = 1;
-
-       while(bloque !=NULL){
-        if(j==numero){
-         resultado= concatenacionVectoresD(resultado,bloque->nextEleVector);                    
+        NodoVector* bloque=  modelo->nextEleNodoVect;   
+        int j = 1;
+        while(bloque !=NULL){
+            if(j==numero){
+                resultado= concatenacionVectoresD(resultado,bloque->nextEleVector);                    
+            }
+            bloque=bloque->nextNodoVector;
+            j++;
         }
-        
-         bloque=bloque->nextNodoVector;
-        
-        j++;
-       }
-      
-       
-     modelo = modelo->nextMatrizProf;
-
+        modelo = modelo->nextMatrizProf;
     }
     resultado=resultado->next;
     return resultado;
 }
-VectorEle* UnionBloque(int numero,char* nombre){       
+
+VectorEle* UnionBloque(int numero,char* nombre){        //X_( x , dot )
     MatrizProf* modelo = buscadorModeloDatos(nombre);
     VectorEle* resultado= crearVectorEle(modelo->nextEleNodoVect->nextEleVector->num);  
     int j = 1;
-
     while(modelo != NULL){  
-       NodoVector* bloque=  modelo->nextEleNodoVect;   
-       if (j==numero){
-       while(bloque !=NULL){
-        if(j==numero){
-         resultado= concatenacionVectoresD(resultado,bloque->nextEleVector);                    
+       NodoVector* bloque = modelo->nextEleNodoVect;   
+        if (j == numero){
+            while(bloque != NULL){
+                if(j == numero){
+                    resultado = concatenacionVectoresD(resultado,bloque->nextEleVector);                    
+                }
+                bloque=bloque->nextNodoVector;
+            }
+        j++;
         }
-        
-         bloque=bloque->nextNodoVector;
-        
-
-       }
-       j++;
-       }
-     modelo = modelo->nextMatrizProf;
-
+        modelo = modelo->nextMatrizProf;
     }
     resultado=resultado->next;
     return resultado;
 }
 
-VectorEle* UnionModelo(char* nombre){       
+VectorEle* UnionModelo(char* nombre){           //X_( dot , dot )
     MatrizProf* modelo = buscadorModeloDatos(nombre);
-    VectorEle* resultado= crearVectorEle(modelo->nextEleNodoVect->nextEleVector->num);  
-   
+    VectorEle* resultado = crearVectorEle(modelo->nextEleNodoVect->nextEleVector->num);  
     while(modelo != NULL){  
        int j = 1;
        NodoVector* bloque=  modelo->nextEleNodoVect;   
        while(bloque !=NULL){
-    
-         resultado= concatenacionVectoresD(resultado,bloque->nextEleVector);                    
-        
-        
-         bloque=bloque->nextNodoVector;
-
+           resultado= concatenacionVectoresD(resultado,bloque->nextEleVector);                    
+           bloque=bloque->nextNodoVector;
        }
-    
-     modelo = modelo->nextMatrizProf;
-
+    modelo = modelo->nextMatrizProf;
     }
-    resultado=resultado->next;
+    resultado = resultado->next;
     return resultado;
 }
 
-//Algoritmo Ordenamiento Burbuja VectorEle* vector
+//Algoritmo Ordenamiento Burbuja
 VectorEle* ordenamientoBurbuja (char* nombre){
     VectorEle* aux = buscarVector(nombre, iniNodeVector); 
     nombrarVector(iniNodeVector, nombre, aux);
@@ -901,9 +867,8 @@ VectorEle* ordenamientoBurbuja (char* nombre){
     return buscarVector("0|0|0|0|", iniNodeVector);
 }
 
-//
-
 /* Fin Funciones Incluidas*/
+
 
 /*  Main de ejecución   */
 
