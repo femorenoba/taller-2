@@ -110,7 +110,7 @@ VectorEle* UnionBloque(int numero, char* nombre);
 VectorEle* UnionModelo(char* nombre);
 VectorEle* buscarVector(char* nombre, VectorIni* head);
 VectorEle* concatenacionVectoresD(VectorEle* vector1, VectorEle* vector2);
-
+VectorEle* ordenamientoBurbuja (VectorEle* vector);
 
 
 // Inicializacion atributos
