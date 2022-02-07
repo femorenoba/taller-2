@@ -131,7 +131,7 @@ MatrizProfIni* iniMatrizProf = NULL;
     struct MatrizProf* mProf;
 }
 
-%start line 
+%start program
 %token PARENTESISA 
 %token PARENTESISB 
 %token COMENTARIO          
@@ -189,6 +189,12 @@ MatrizProfIni* iniMatrizProf = NULL;
 %left NUMERO_ENTERO NUMERO_FLOTANTE
 
 %%
+program: bloqueCod                                       {;}
+        ;
+
+bloqueCod: line                                          {;}
+        | bloque line                                    {;}        
+        ;
 
 line    : line ';'                                      {;} 
         | indent ';'                                    {;}
