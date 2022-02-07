@@ -74,10 +74,11 @@
      UNIONTRATAMIENTO = 290,
      CONCATENACIONVECTORES = 291,
      BUSCARVECTOR = 292,
-     ID = 293,
-     NUMERO_ENTERO = 294,
-     NUMERO_FLOTANTE = 295,
-     LOGICA = 296
+     ORB = 293,
+     ID = 294,
+     NUMERO_ENTERO = 295,
+     NUMERO_FLOTANTE = 296,
+     LOGICA = 297
    };
 #endif
 /* Tokens.  */
@@ -116,10 +117,11 @@
 #define UNIONTRATAMIENTO 290
 #define CONCATENACIONVECTORES 291
 #define BUSCARVECTOR 292
-#define ID 293
-#define NUMERO_ENTERO 294
-#define NUMERO_FLOTANTE 295
-#define LOGICA 296
+#define ORB 293
+#define ID 294
+#define NUMERO_ENTERO 295
+#define NUMERO_FLOTANTE 296
+#define LOGICA 297
 
 
 
@@ -142,7 +144,7 @@ typedef union YYSTYPE
 
 
 /* Line 1676 of yacc.c  */
-#line 146 "y.tab.h"
+#line 148 "y.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

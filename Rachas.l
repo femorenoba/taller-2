@@ -49,7 +49,7 @@ operacion       \+|\-|\*|\/|\^|@|;|,
 "UnionTratamiento"             {return UNIONTRATAMIENTO;}
 "UnionBloque"             {return UNIONBLOQUE;}
 "UnionModelo"             {return UNIONMODELO;}
-
+"ordenamientoBurbuja" {return ORB;}
 
 
 

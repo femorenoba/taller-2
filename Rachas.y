@@ -110,7 +110,7 @@ VectorEle* UnionBloque(int numero, char* nombre);
 VectorEle* UnionModelo(char* nombre);
 VectorEle* buscarVector(char* nombre, VectorIni* head);
 VectorEle* concatenacionVectoresD(VectorEle* vector1, VectorEle* vector2);
-VectorEle* ordenamientoBurbuja (VectorEle* vector);
+VectorEle* ordenamientoBurbuja (char* nombre);
 
 
 // Inicializacion atributos
@@ -167,6 +167,7 @@ MatrizProfIni* iniMatrizProf = NULL;
 %token UNIONTRATAMIENTO
 %token CONCATENACIONVECTORES
 %token BUSCARVECTOR
+%token ORB
 
 %token<str> ID   
 %token<numberI> NUMERO_ENTERO
@@ -231,6 +232,7 @@ vector  : CONCATENACIONVECTORES PARENTESISA ID ID PARENTESISB           {$$ = co
         | UNIONTRATAMIENTO PARENTESISA expr ID PARENTESISB           {$$ = UnionTratamiento($3,$4);}
         | UNIONBLOQUE PARENTESISA expr ID PARENTESISB           {$$ = UnionBloque($3,$4);}
         | UNIONMODELO PARENTESISA ID PARENTESISB           {$$ = UnionModelo($3);}
+        | ORB PARENTESISA ID PARENTESISB                {$$ = ordenamientoBurbuja($3);}
         | term                                          {$$ = crearVectorEle($1);}
         | vector term                                   {$$ = agregarVectorEle($1,crearVectorEle($2));}
         ;
@@ -868,23 +870,35 @@ VectorEle* UnionModelo(char* nombre){
     return resultado;
 }
 
-//Algoritmo Ordenamiento Burbuja
-VectorEle* ordenamientoBurbuja (VectorEle* vector){
-    VectorEle* ordenado=vector;
-    VectorEle* a = vector;
-    while(vector!=NULL){
-        while(ordenado->next->next != NULL){
-            VectorEle* a = vector;
-            if(ordenado->num > ordenado->next->num){
-                a = ordenado;
-                ordenado = ordenado->next;
-                ordenado->next = a;
+//Algoritmo Ordenamiento Burbuja VectorEle* vector
+VectorEle* ordenamientoBurbuja (char* nombre){
+    VectorEle* aux = buscarVector(nombre, iniNodeVector); 
+    nombrarVector(iniNodeVector, nombre, aux);
+
+    VectorEle* ordenado = crearVectorEle(aux->num);
+    nombrarVector(iniNodeVector, "0|0|0|0|", ordenado);
+
+    aux=aux->next;
+    while(aux != NULL){
+        agregarVectorEle(ordenado, crearVectorEle(aux->num));
+        aux=aux->next;
+    } 
+    int a;
+    while(ordenado->next != NULL){
+        VectorEle* siguiente = ordenado->next;
+        while(siguiente != NULL){
+            if(ordenado->num > siguiente->num){
+                a = siguiente->num;
+                siguiente->num = ordenado->num;
+                ordenado->num = a;
             }
-            ordenado=ordenado->next;
+            siguiente=siguiente->next;
         }
         ordenado = ordenado->next;
+        siguiente=ordenado->next;
     }
-    return ordenado;
+
+    return buscarVector("0|0|0|0|", iniNodeVector);
 }
 
 //
